@@ -1,6 +1,7 @@
 package hibernate.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,54 +13,32 @@ import java.util.Random;
 
 @Entity
 @Table(name = "pp_obecnosc")
-public class Obecnosc {
+public class Obecnosc implements Serializable {
 
+    @EmbeddedId
+    private ObecnoscPK obecnoscpk;
 
- /*   @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
-    private int id; */
-
-    @Column(name = "ID_czlonka", nullable = false)
-    private int idPerson;
-
-    @Column(name = "ID_spotkania", nullable = false)
-    private int idMeeting;
-
-
- /*   @OneToOne(cascade = CascadeType.PERSIST)
+      /*   @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="add_id", referencedColumnName = "id")
     Address address;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
-
- */
+    Address address;  */
 
     public Obecnosc() {}
 
-    public int getIdPerson() {
-        return idPerson;
+    public ObecnoscPK getObecnoscpk() {
+        return obecnoscpk;
     }
 
-    public void setIdPerson( int id ) {
-        this.idPerson = id;
+    public void setObecnoscpk(ObecnoscPK obecnoscpk) {
+        this.obecnoscpk = obecnoscpk;
     }
-
-    public int getIdMeeting() {
-        return idMeeting;
-    }
-
-    public void setIdMeeting( int id ) {
-        this.idMeeting = id;
-    }
-
 
     public static Obecnosc copyObecnosci(Obecnosc obecnosc) {
         Obecnosc presence = new Obecnosc();
-        presence.setIdPerson(obecnosc.getIdPerson());
-        presence.setIdMeeting(obecnosc.getIdMeeting());
+        presence.obecnoscpk = obecnosc.obecnoscpk;
         return presence;
     }
 }
