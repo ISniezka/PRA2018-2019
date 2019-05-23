@@ -57,11 +57,11 @@ class Manager {
 
             System.out.println("Employee " + employee.getId() + " " + employee.getFirstName() + employee.getLastName());
 
-            //User-defined query
+            // User-defined query
             getThemAll(entityManager);
             changeFirstGuyToNowak(entityManager);
 
-            //Pageable query
+            // Pageable query
             for (int i = 1; i < 101; i++) {
                 entityManager.persist(Employee.copyEmployee(emp));
             }

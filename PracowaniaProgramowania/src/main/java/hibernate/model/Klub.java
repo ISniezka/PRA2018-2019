@@ -1,0 +1,84 @@
+package hibernate.model;
+
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * Created by agnzim on 06.05.2019.
+ */
+
+@Entity
+@Table(name = "pp_kluby")
+public class Klub {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "ID", nullable = false)
+    private int id;
+
+    @Column(name = "nazwa", nullable = false)
+    private String clubName;
+
+    @Column(name = "data_powstania", nullable = false)
+    private Date openingDate;
+
+    @Column(name = "zalozyciel", nullable = false)
+    private int founder;
+
+
+ /*   @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="add_id", referencedColumnName = "id")
+    Address address;
+
+    @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
+    private List<Employee> managers = new ArrayList<Employee>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Employee> subworkers = new ArrayList<>();   */
+
+    public Klub() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId( int id ) {
+        this.id = id;
+    }
+
+    public String getClubName() {
+        return clubName;
+    }
+
+    public void setClubName( String club_name ) {
+        this.clubName = club_name;
+    }
+
+    public Date getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate( Date opening_date ) {
+        this.openingDate = opening_date;
+    }
+
+    public int getFounder() {
+        return founder;
+    }
+
+    public void setFounder( int founder ) {
+        this.founder = founder;
+    }
+
+
+    public static Klub copyKlubu(Klub klub) {
+        Klub club = new Klub();
+        club.setClubName(klub.getClubName());
+        club.setOpeningDate(klub.getOpeningDate());
+        club.setFounder(klub.getFounder());
+        return club;
+    }
+}
