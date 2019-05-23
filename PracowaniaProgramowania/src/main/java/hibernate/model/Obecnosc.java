@@ -15,6 +15,10 @@ import java.util.Random;
 public class Obecnosc {
 
 
+ /*   @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private int id; */
 
     @Column(name = "ID_czlonka", nullable = false)
     private int idPerson;
