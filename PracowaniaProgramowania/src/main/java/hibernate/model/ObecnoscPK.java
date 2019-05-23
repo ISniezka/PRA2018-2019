@@ -3,6 +3,7 @@ package hibernate.model;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class ObecnoscPK implements Serializable {
@@ -35,5 +36,18 @@ public class ObecnoscPK implements Serializable {
 
     public void setIdMeeting(Integer idMeeting) {
         this.idMeeting = idMeeting;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ObecnoscPK)) return false;
+        ObecnoscPK that = (ObecnoscPK) o;
+        return Objects.equals(getIdMeeting(), that.getIdMeeting()) && Objects.equals(getIdPerson(), that.getIdPerson());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIdMeeting(), getIdPerson());
     }
 }
