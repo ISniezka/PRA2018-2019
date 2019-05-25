@@ -21,6 +21,9 @@ public class Czlonek {
     @Column(name = "ID", nullable = false)
     private int id;
 
+    @Column(name = "aktywny")
+    private boolean activity;
+
     @Column(name = "imie", nullable = false)
     private String firstName;
 
@@ -33,10 +36,20 @@ public class Czlonek {
     @Column(name = "dolaczenie", nullable = false)
     private ZonedDateTime joinDate;
 
- /*   @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
+    /*@OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="id", referencedColumnName = "idPerson")
+    Obecnosc obecnosc;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="id", referencedColumnName = "presidentId")
+    Prezes prezes;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="id", referencedColumnName = "founder")
+    Klub klub;
+
+
+    /*
     @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
     private List<Employee> managers = new ArrayList<Employee>();
 
@@ -45,7 +58,8 @@ public class Czlonek {
 
     public Czlonek() {}
 
-    public Czlonek(String firstName, String lastName, int club, ZonedDateTime joinDate) {
+    public Czlonek(boolean activity, String firstName, String lastName, int club, ZonedDateTime joinDate) {
+        this.activity = activity;
         this.firstName = firstName;
         this.lastName = lastName;
         this.club = club;
@@ -58,6 +72,14 @@ public class Czlonek {
 
     public void setId( int id ) {
         this.id = id;
+    }
+
+    public boolean getActivity() {
+        return activity;
+    }
+
+    public void setActivity( boolean activity ) {
+        this.activity = activity;
     }
 
     public String getFirstName() {
@@ -95,6 +117,7 @@ public class Czlonek {
 
     public static Czlonek copyCzlonka(Czlonek osoba) {
         Czlonek person = new Czlonek();
+        person.setActivity(osoba.getActivity());
         person.setFirstName(osoba.getFirstName());
         person.setLastName(osoba.getLastName());
         person.setClub(osoba.getClub());

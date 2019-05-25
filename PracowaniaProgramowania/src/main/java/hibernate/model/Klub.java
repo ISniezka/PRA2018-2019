@@ -16,7 +16,7 @@ import java.util.Random;
 public class Klub {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private int id;
 
@@ -41,6 +41,12 @@ public class Klub {
     private List<Employee> subworkers = new ArrayList<>();   */
 
     public Klub() {}
+
+    public Klub(String clubName, ZonedDateTime openingDate, int founder) {
+        this.clubName = clubName;
+        this.openingDate = openingDate;
+        this.founder = founder;
+    }
 
     public int getId() {
         return id;

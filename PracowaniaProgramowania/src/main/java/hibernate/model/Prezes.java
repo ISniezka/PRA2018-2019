@@ -12,11 +12,11 @@ import java.util.Random;
  */
 
 @Entity
-@Table(name = "pp_prezesi")
+@Table(name = "pp_prezesury")
 public class Prezes {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private int id;
 
@@ -44,6 +44,13 @@ public class Prezes {
 
 
     public Prezes() {}
+
+    public Prezes(int presidentId, int clubId, ZonedDateTime cadencyBegin, ZonedDateTime cadencyEnd) {
+        this.presidentId = presidentId;
+        this.clubId = clubId;
+        this.cadencyBegin = cadencyBegin;
+        this.cadencyEnd = cadencyEnd;
+    }
 
     public int getId() {
         return id;

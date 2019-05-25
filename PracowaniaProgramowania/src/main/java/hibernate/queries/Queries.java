@@ -1,7 +1,5 @@
 package hibernate.queries;
 
-import hibernate.model.Employee;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -9,7 +7,7 @@ import java.util.List;
 
 public class Queries {
 
-    EntityManager entityManager;
+   /* EntityManager entityManager;
 
     public Queries(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -39,5 +37,6 @@ public class Queries {
         query.setMaxResults(pageSize);
 
         return query.getResultList();
-    }
+         }*/
+
 }

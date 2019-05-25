@@ -39,10 +39,10 @@ public class Spotkanie {
     Address address;
 
     @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
-    private List<Employee> managers = new ArrayList<Employee>();
+    private List<> managers = new ArrayList<Employee>();
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<Employee> subworkers = new ArrayList<>();   */
+    private List<> subworkers = new ArrayList<>();   */
 
     public Spotkanie() {}
 
