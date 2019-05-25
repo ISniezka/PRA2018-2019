@@ -48,6 +48,9 @@ public class main {
             List<Czlonek> czlonkowie = query2.getResultList();
             for(Czlonek cz : czlonkowie){
             System.out.println(czlonkowie); */
+            Query zapytanie = entityManager.createQuery("Select firstName FROM Czlonek");
+
+            System.out.println("Odczytalem: " + zapytanie.getResultList());
 
         }catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed, tu masz dlaczego\n" + ex);
@@ -56,6 +59,8 @@ public class main {
         }
 
     }
+
+
 
 
     public static void generacjaDanych(EntityManager entityManager){
