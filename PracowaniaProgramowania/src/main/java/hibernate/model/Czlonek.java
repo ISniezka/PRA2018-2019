@@ -2,6 +2,7 @@ package hibernate.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class Czlonek {
     private int club;
 
     @Column(name = "dolaczenie", nullable = false)
-    private Date joinDate;
+    private ZonedDateTime joinDate;
 
  /*   @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="add_id", referencedColumnName = "id")
@@ -44,7 +45,7 @@ public class Czlonek {
 
     public Czlonek() {}
 
-    public Czlonek(String firstName, String lastName, int club, Date joinDate) {
+    public Czlonek(String firstName, String lastName, int club, ZonedDateTime joinDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.club = club;
@@ -83,11 +84,11 @@ public class Czlonek {
         this.club = club;
     }
 
-    public Date getJoingDate() {
+    public ZonedDateTime getJoingDate() {
         return joinDate;
     }
 
-    public void setJoingDate( Date join_date ) {
+    public void setJoingDate( ZonedDateTime join_date ) {
         this.joinDate = join_date;
     }
 

@@ -2,6 +2,7 @@ package hibernate.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class Klub {
     private String clubName;
 
     @Column(name = "data_powstania", nullable = false)
-    private Date openingDate;
+    private ZonedDateTime openingDate;
 
     @Column(name = "zalozyciel", nullable = false)
     private int founder;
@@ -57,11 +58,11 @@ public class Klub {
         this.clubName = club_name;
     }
 
-    public Date getOpeningDate() {
+    public ZonedDateTime getOpeningDate() {
         return openingDate;
     }
 
-    public void setOpeningDate( Date opening_date ) {
+    public void setOpeningDate( ZonedDateTime opening_date ) {
         this.openingDate = opening_date;
     }
 

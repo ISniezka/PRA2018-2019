@@ -2,6 +2,7 @@ package hibernate.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +30,7 @@ public class Spotkanie {
     private String venue;
 
     @Column(name = "data_powstania", nullable = false)
-    private Date meetingDate;
+    private ZonedDateTime meetingDate;
 
 
 
@@ -77,11 +78,11 @@ public class Spotkanie {
         this.topic = topic;
     }
 
-    public Date getMeetingDate() {
+    public ZonedDateTime getMeetingDate() {
         return meetingDate;
     }
 
-    public void setMeetingDate( Date meeting_date ) {
+    public void setMeetingDate( ZonedDateTime meeting_date ) {
         this.meetingDate = meeting_date;
     }
 

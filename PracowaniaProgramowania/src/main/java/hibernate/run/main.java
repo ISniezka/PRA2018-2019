@@ -5,7 +5,9 @@ import hibernate.model.Employee;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.time.ZonedDateTime;
 /**
  * Created by agnzim on 08.05.2019.
  */
@@ -41,21 +43,22 @@ public class main {
 
             // rozpocznij transakcje
             entityManager.getTransaction().begin();
-            Czlonek c = new Czlonek();
-            c.setFirstName("Jacek");
-            c.setLastName("Brzoza");
-            c.setClub(1);
-            Date data = new Date(System.currentTimeMillis());
-            System.out.println("Data: " + data);
-            c.setJoingDate(data);
+
+            Czlonek c = new Czlonek("Jakub","Borewicz",1, ZonedDateTime.now() );
+            Czlonek d = new Czlonek("Aga","Guzioł",1, ZonedDateTime.now() );
 
             entityManager.persist(c);
+            entityManager.persist(d);
+            entityManager.flush();
+            entityManager.getTransaction().commit();
 
-            Query query = entityManager.createQuery("Select e FROM pp_czlonkowie e");
-            List<Czlonek> czlonkowie = query.getResultList();
-            for(Czlonek cz : czlonkowie){
-                System.out.println(cz);
-            }
+            //Query query = entityManager.createQuery("Select e FROM pp_czlonkowie e");
+            //List<Czlonek> czlonkowie = query.getResultList();
+            //for(Czlonek cz : czlonkowie){
+              //  System.out.println(cz);
+            //}
+
+
 
         }catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
