@@ -3,9 +3,7 @@ package hibernate.model;
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by agnzim on 06.05.2019.
@@ -32,19 +30,21 @@ public class Spotkanie {
     @Column(name = "data_powstania", nullable = false)
     private ZonedDateTime meetingDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Klub hostedClub;
 
+    @OneToMany(mappedBy = "presenceIn", fetch = FetchType.LAZY)
+    private Set<Obecnosc> myMeeting = new HashSet<Obecnosc>();
 
- /*   @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
-
-    @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
-    private List<> managers = new ArrayList<Employee>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<> subworkers = new ArrayList<>();   */
 
     public Spotkanie() {}
+
+    public Spotkanie(int clubId, String topic, String venue, ZonedDateTime meetingDate) {
+        this.clubId = clubId;
+        this.topic = topic;
+        this.venue = venue;
+        this.meetingDate = meetingDate;
+    }
 
     public int getId() {
         return id;

@@ -32,16 +32,9 @@ public class Prezes {
     @Column(name = "koniec", nullable = false)
     private ZonedDateTime cadencyEnd;
 
- /*   @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
-
-    @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
-    private List<Employee> managers = new ArrayList<Employee>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Employee> subworkers = new ArrayList<>();   */
-
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="presidentId", referencedColumnName = "id")
+    Czlonek czlonek;
 
     public Prezes() {}
 

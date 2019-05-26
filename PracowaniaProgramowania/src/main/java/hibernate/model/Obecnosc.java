@@ -18,15 +18,17 @@ public class Obecnosc implements Serializable {
     @EmbeddedId
     private ObecnoscPK obecnoscpk;
 
-      /*   @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Klub presenceIn;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;  */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Czlonek presenceBy;
 
     public Obecnosc() {}
+
+    public Obecnosc(ObecnoscPK obecnoscpk) {
+        this.obecnoscpk = obecnoscpk;
+    }
 
     public ObecnoscPK getObecnoscpk() {
         return obecnoscpk;

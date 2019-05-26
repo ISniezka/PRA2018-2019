@@ -3,9 +3,7 @@ package hibernate.model;
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by agnzim on 06.05.2019.
@@ -29,16 +27,15 @@ public class Klub {
     @Column(name = "zalozyciel", nullable = false)
     private int founder;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name="founder", referencedColumnName = "id")
+    Czlonek czlonek;
 
- /*   @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="add_id", referencedColumnName = "id")
-    Address address;
+    @OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY)
+    private Set<Czlonek> clubMember = new HashSet<Czlonek>();
 
-    @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
-    private List<Employee> managers = new ArrayList<Employee>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Employee> subworkers = new ArrayList<>();   */
+    @OneToMany(mappedBy = "hostedClub", fetch = FetchType.LAZY)
+    private Set<Spotkanie> meeting = new HashSet<Spotkanie>();
 
     public Klub() {}
 

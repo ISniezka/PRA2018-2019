@@ -3,9 +3,7 @@ package hibernate.model;
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by agnzim on 12.04.2019.
@@ -30,31 +28,17 @@ public class Czlonek {
     @Column(name = "nazwisko", nullable = false)
     private String lastName;
 
-    @Column(name = "klub", nullable = false)
+    @Column(name = "czlonek_klubu", nullable = false)
     private int club;
 
     @Column(name = "dolaczenie", nullable = false)
     private ZonedDateTime joinDate;
 
-    /*@OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="id", referencedColumnName = "idPerson")
-    Obecnosc obecnosc;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Klub myClub;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="id", referencedColumnName = "presidentId")
-    Prezes prezes;
-
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="id", referencedColumnName = "founder")
-    Klub klub;
-
-
-    /*
-    @ManyToMany(mappedBy = "subworkers", cascade = CascadeType.ALL)
-    private List<Employee> managers = new ArrayList<Employee>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Employee> subworkers = new ArrayList<>();   */
+    @OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY)
+    private Set<Obecnosc> myMeeting = new HashSet<Obecnosc>();
 
     public Czlonek() {}
 
