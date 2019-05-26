@@ -19,9 +19,11 @@ public class Obecnosc implements Serializable {
     private ObecnoscPK obecnoscpk;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idMeeting", referencedColumnName = "id")
     private Klub presenceIn;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idPerson", referencedColumnName = "id")
     private Czlonek presenceBy;
 
     public Obecnosc() {}

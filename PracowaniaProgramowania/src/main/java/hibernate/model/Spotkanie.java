@@ -31,6 +31,7 @@ public class Spotkanie {
     private ZonedDateTime meetingDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clubId", referencedColumnName = "id")
     private Klub hostedClub;
 
     @OneToMany(mappedBy = "presenceIn", fetch = FetchType.LAZY)

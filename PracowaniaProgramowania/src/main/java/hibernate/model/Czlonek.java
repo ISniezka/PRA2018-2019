@@ -35,6 +35,7 @@ public class Czlonek {
     private ZonedDateTime joinDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club", referencedColumnName = "id")
     private Klub myClub;
 
     @OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY)
