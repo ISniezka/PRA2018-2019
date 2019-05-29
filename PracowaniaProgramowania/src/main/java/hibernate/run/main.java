@@ -64,7 +64,7 @@ public class main {
 
             //entityManager.getEntityManagerFactory().getCache().evictAll();
             entityManager.clear();
-
+//
             System.out.println("DRUGIE ODCZYTANIE");
 
             //entityManager.getTransaction().begin();
