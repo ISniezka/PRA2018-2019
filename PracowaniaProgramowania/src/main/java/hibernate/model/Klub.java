@@ -27,14 +27,14 @@ public class Klub {
     @Column(name = "zalozyciel", nullable = false)
     private int founder;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)//, orphanRemoval = true)
     @JoinColumn(name="founder", referencedColumnName = "id")
     Czlonek founder2;
 
-    @OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
     private Set<Czlonek> clubMember = new HashSet<Czlonek>();
 
-    @OneToMany(mappedBy = "hostedClub", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hostedClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
     private Set<Spotkanie> meeting = new HashSet<Spotkanie>();
 
     public Klub() {}

@@ -38,7 +38,7 @@ public class Czlonek {
     @JoinColumn(name = "club", referencedColumnName = "id")
     private Klub myClub;
 
-    @OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
     private Set<Obecnosc> myMeeting = new HashSet<Obecnosc>();
 
     public Czlonek() {}

@@ -16,8 +16,7 @@ public class ObecnoscPK implements Serializable {
     @Column(name = "ID_spotkania", nullable = false)
     protected Integer idMeeting;
 
-    public ObecnoscPK() {
-    }
+    public ObecnoscPK() {}
 
     public ObecnoscPK(Integer idPerson, Integer idMeeting) {
         this.idPerson = idPerson;

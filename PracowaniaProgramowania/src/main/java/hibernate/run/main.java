@@ -7,7 +7,11 @@ import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import hibernate.model.*;
+import hibernate.queries.Queries;
+import hibernate.saveAndRead.ReadFromFile;
+import hibernate.saveAndRead.SaveToFile;
 
+import java.sql.Array;
 import java.sql.Date;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -75,7 +79,22 @@ public class main {
                 System.out.println(cz);
             }
 
-
+            System.out.println("TRZECIE ODCZYTANIE (STRONICOWANIE)");
+            ArrayList <Obecnosc> listaWynikow = new ArrayList<>();
+            Queries q = new Queries(entityManager);
+            int ileStron = q.sumPages(10);
+            for(int i=1; i<=ileStron; i++) {
+                listaWynikow = q.getAllPresenceByPage(10,i);
+                for(Obecnosc o : listaWynikow) {
+                    System.out.println(o);
+                }
+                System.out.println("------------ KOLEJNA STRONA -------------");
+            }
+            //q.updateRecordInTableCzlonek(2,"nazwisko","NAZWISKOoooo"); //zmien nazwisko Bozenie
+            //SaveToFile s1 = new SaveToFile(entityManager);
+            //s1.readFromDBAndSaveToXML();
+            ReadFromFile r1 = new ReadFromFile(entityManager);
+            r1.readFromXMLAndWriteToDB();
 
         }catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed, tu masz dlaczego\n" + ex);
