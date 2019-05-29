@@ -28,7 +28,7 @@ public class Czlonek {
     @Column(name = "nazwisko", nullable = false)
     private String lastName;
 
-    @Column(name = "czlonek_klubu", nullable = false)
+    @Column(name = "czlonek_klubu")
     private int club;
 
     @Column(name = "dolaczenie", nullable = false)
@@ -49,6 +49,10 @@ public class Czlonek {
         this.lastName = lastName;
         this.club = club;
         this.joinDate = joinDate;
+    }
+
+     public void addToPresenceList (Obecnosc o){
+        myMeeting.add(o);
     }
 
     public int getId() {
@@ -89,6 +93,14 @@ public class Czlonek {
 
     public void setClub( int club ) {
         this.club = club;
+    }
+
+    public Klub getMyClub() {
+        return myClub;
+    }
+
+    public void setMyClub(Klub myClub) {
+        this.myClub = myClub;
     }
 
     public ZonedDateTime getJoingDate() {

@@ -29,7 +29,7 @@ public class Klub {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="founder", referencedColumnName = "id")
-    Czlonek czlonek;
+    Czlonek founder2;
 
     @OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY)
     private Set<Czlonek> clubMember = new HashSet<Czlonek>();
@@ -43,6 +43,21 @@ public class Klub {
         this.clubName = clubName;
         this.openingDate = openingDate;
         this.founder = founder;
+    }
+
+    public Klub(String clubName, ZonedDateTime openingDate, int founder, Czlonek founder2) {
+        this.clubName = clubName;
+        this.openingDate = openingDate;
+        this.founder = founder;
+        this.founder2 = founder2;
+    }
+
+    public void addMemberToTheClub(Czlonek c) {
+        clubMember.add(c);
+    }
+
+    public void addClubMeeting(Spotkanie s){
+        meeting.add(s);
     }
 
     public int getId() {

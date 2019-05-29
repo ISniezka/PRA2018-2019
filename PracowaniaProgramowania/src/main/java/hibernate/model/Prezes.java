@@ -34,7 +34,7 @@ public class Prezes {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="presidentId", referencedColumnName = "id")
-    Czlonek czlonek;
+    Czlonek president;
 
     public Prezes() {}
 
@@ -45,6 +45,14 @@ public class Prezes {
         this.cadencyEnd = cadencyEnd;
     }
 
+    public Prezes(int presidentId, int clubId, ZonedDateTime cadencyBegin, ZonedDateTime cadencyEnd, Czlonek czlonek) {
+        this.presidentId = presidentId;
+        this.clubId = clubId;
+        this.cadencyBegin = cadencyBegin;
+        this.cadencyEnd = cadencyEnd;
+        this.president = czlonek;
+    }
+
     public int getId() {
         return id;
     }
@@ -53,11 +61,17 @@ public class Prezes {
         this.id = id;
     }
 
-    public int getPresidentId() {
-        return presidentId;
-    }
+    public int getPresidentId() { return presidentId;    }
 
     public void setPresidentId( int id ) { this.presidentId = id; }
+
+    public Czlonek getPresident() {
+        return president;
+    }
+
+    public void setPresident(Czlonek president) {
+        this.president = president;
+    }
 
     public int getClubId() {
         return clubId;

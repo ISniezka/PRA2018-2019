@@ -30,12 +30,15 @@ public class Spotkanie {
     @Column(name = "data_powstania", nullable = false)
     private ZonedDateTime meetingDate;
 
+    // lista członkw jako kolejne pole, relacja many to many, usunięcie klasy obecność i obecnośćpk,
+    // i to samo z członkami, lista w jakich spotkaniach brali udział
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clubId", referencedColumnName = "id")
     private Klub hostedClub;
 
-    @OneToMany(mappedBy = "presenceIn", fetch = FetchType.LAZY)
-    private Set<Obecnosc> myMeeting = new HashSet<Obecnosc>();
+    @OneToMany(mappedBy = "presenceDuring", fetch = FetchType.LAZY)
+    private Set<Obecnosc> presencesAtTheMeeting = new HashSet<Obecnosc>();
 
 
     public Spotkanie() {}
@@ -45,6 +48,10 @@ public class Spotkanie {
         this.topic = topic;
         this.venue = venue;
         this.meetingDate = meetingDate;
+    }
+
+    public void addPresencesAtTheMeeting(Obecnosc o) {
+        presencesAtTheMeeting.add(o);
     }
 
     public int getId() {
@@ -61,6 +68,14 @@ public class Spotkanie {
 
     public void setClubId( int id ) {
         this.clubId = id;
+    }
+
+    public Klub getHostedClub() {
+        return hostedClub;
+    }
+
+    public void setHostedClub(Klub hostedClub) {
+        this.hostedClub = hostedClub;
     }
 
     public String getVenue() {

@@ -20,7 +20,7 @@ public class Obecnosc implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idMeeting", referencedColumnName = "id")
-    private Klub presenceIn;
+    private Spotkanie presenceDuring;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idPerson", referencedColumnName = "id")
@@ -38,6 +38,30 @@ public class Obecnosc implements Serializable {
 
     public void setObecnoscpk(ObecnoscPK obecnoscpk) {
         this.obecnoscpk = obecnoscpk;
+    }
+
+    public Spotkanie getPresenceDuring() {
+        return presenceDuring;
+    }
+
+    public void setPresenceDuring(Spotkanie presenceDuring) {
+        this.presenceDuring = presenceDuring;
+    }
+
+    public Czlonek getPresenceBy() {
+        return presenceBy;
+    }
+
+    public void setPresenceBy(Czlonek presenceBy) {
+        this.presenceBy = presenceBy;
+    }
+
+    public int getMeeting(){
+        return this.obecnoscpk.getIdMeeting();
+    }
+
+    public int getPerson(){
+        return this.obecnoscpk.getIdPerson();
     }
 
     public static Obecnosc copyObecnosci(Obecnosc obecnosc) {
