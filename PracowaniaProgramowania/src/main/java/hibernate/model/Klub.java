@@ -93,11 +93,12 @@ public class Klub {
     }
 
 
-    public static Klub copyKlubu(Klub klub) {
-        Klub club = new Klub();
-        club.setClubName(klub.getClubName());
-        club.setOpeningDate(klub.getOpeningDate());
-        club.setFounder(klub.getFounder());
-        return club;
+    @Override
+    public String toString() {
+        return "Klub{" +
+                "id=" + id +
+                ", clubName='" + clubName + '\'' +
+                ", openingDate=" + openingDate +
+                ", founder=" + founder +'}';
     }
 }

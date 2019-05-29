@@ -96,12 +96,14 @@ public class Prezes {
     }
 
 
-    public static Prezes copyPrezesa(Prezes prezes) {
-        Prezes president = new Prezes();
-        president.setPresidentId(prezes.getPresidentId());
-        president.setClubId(prezes.getClubId());
-        president.setcadencyBegin(prezes.getcadencyBegin());
-        president.setcadencyEnd(prezes.getcadencyEnd());
-        return president;
+    @Override
+    public String toString() {
+        return "Prezes{" +
+                "id=" + id +
+                ", presidentId=" + presidentId +
+                ", clubId=" + clubId +
+                ", cadencyBegin=" + cadencyBegin +
+                ", cadencyEnd=" + cadencyEnd +
+                '}';
     }
 }

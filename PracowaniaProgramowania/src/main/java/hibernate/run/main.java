@@ -2,6 +2,9 @@ package hibernate.run;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Root;
 
 import hibernate.model.*;
 
@@ -39,12 +42,36 @@ public class main {
 
             // Pobieranie danych
 
-            Query zapytanie = entityManager.createQuery("Select firstName FROM Czlonek");
-            System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
+            //Query zapytanie = entityManager.createQuery("Select firstName FROM Czlonek");
+            //System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
 
-            zapytanie = entityManager.createQuery("SELECT e.lastName FROM Czlonek e WHERE e.club = '3'");
-            List<String> czlonkowie = zapytanie.getResultList();
-            for(String cz : czlonkowie){
+            System.out.println("PIERWSZE ODCZYTANIE");
+            Query zapytanie1 = entityManager.createQuery("SELECT e FROM Czlonek e");
+            List<Czlonek> czlonkowie = zapytanie1.getResultList();
+            for(Czlonek cz : czlonkowie){
+                System.out.println(cz);
+            }
+
+            entityManager.getTransaction().begin();
+
+            System.out.println("USUWANIE");
+            //Query usuwanie = entityManager.createQuery("DELETE FROM Czlonek WHERE club = '2'");
+            //czlonkowie = usuwanie.getResultList();
+
+            entityManager.createQuery("UPDATE Czlonek SET lastName = 'BBBBB' where club='2'").executeUpdate();
+            //entityManager.flush();
+            entityManager.getTransaction().commit();
+
+            //entityManager.getEntityManagerFactory().getCache().evictAll();
+            entityManager.clear();
+
+            System.out.println("DRUGIE ODCZYTANIE");
+
+            //entityManager.getTransaction().begin();
+            Query zapytanie = entityManager.createQuery("SELECT e FROM Czlonek e");
+            //entityManager.getTransaction().commit();
+            List<Czlonek> czlonkowie2 = zapytanie.getResultList();
+            for(Czlonek cz : czlonkowie2){
                 System.out.println(cz);
             }
 

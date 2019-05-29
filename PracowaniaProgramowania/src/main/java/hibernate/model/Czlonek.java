@@ -111,14 +111,14 @@ public class Czlonek {
         this.joinDate = join_date;
     }
 
-
-    public static Czlonek copyCzlonka(Czlonek osoba) {
-        Czlonek person = new Czlonek();
-        person.setActivity(osoba.getActivity());
-        person.setFirstName(osoba.getFirstName());
-        person.setLastName(osoba.getLastName());
-        person.setClub(osoba.getClub());
-        person.setJoingDate(osoba.getJoingDate());
-        return person;
+    @Override
+    public String toString() {
+        return "Czlonek{" +
+                "id=" + id +
+                ", activity=" + activity +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", club=" + club +
+                ", joinDate=" + joinDate +'}';
     }
 }

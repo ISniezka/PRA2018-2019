@@ -64,9 +64,9 @@ public class Obecnosc implements Serializable {
         return this.obecnoscpk.getIdPerson();
     }
 
-    public static Obecnosc copyObecnosci(Obecnosc obecnosc) {
-        Obecnosc presence = new Obecnosc();
-        presence.obecnoscpk = obecnosc.obecnoscpk;
-        return presence;
+    @Override
+    public String toString() {
+        return "Obecnosc{" +
+                "obecnoscpk=" + obecnoscpk +'}';
     }
 }

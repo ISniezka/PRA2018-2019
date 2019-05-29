@@ -112,4 +112,15 @@ public class Spotkanie {
         meeting.setMeetingDate(spotkanie.getMeetingDate());
         return meeting;
     }
+
+    @Override
+    public String toString() {
+        return "Spotkanie{" +
+                "id=" + id +
+                ", clubId=" + clubId +
+                ", topic='" + topic + '\'' +
+                ", venue='" + venue + '\'' +
+                ", meetingDate=" + meetingDate +
+                '}';
+    }
 }

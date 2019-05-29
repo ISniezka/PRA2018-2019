@@ -52,4 +52,12 @@ public class ObecnoscPK implements Serializable {
     public int hashCode() {
         return Objects.hash(getIdMeeting(), getIdPerson());
     }
+
+    @Override
+    public String toString() {
+        return "ObecnoscPK{" +
+                "idPerson=" + idPerson +
+                ", idMeeting=" + idMeeting +
+                '}';
+    }
 }
