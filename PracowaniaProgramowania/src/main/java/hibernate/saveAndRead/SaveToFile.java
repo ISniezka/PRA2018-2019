@@ -1,19 +1,28 @@
 package hibernate.saveAndRead;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+//import com.sun.xml.internal.stream.buffer.stax.StreamWriterBufferCreator;
 import hibernate.model.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import java.beans.Encoder;
+import java.beans.Expression;
+import java.beans.PersistenceDelegate;
 import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.nio.channels.ClosedByInterruptException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class SaveToFile {
 
     private String XMLFileName = "zapisXML.xml";
@@ -26,7 +35,7 @@ public class SaveToFile {
     private ArrayList <Obecnosc> PresenceList;
 
     private Temporary temp;
-
+    public XMLEncoder encoder = null;
     private EntityManager entityManager;
 
     public SaveToFile(EntityManager entityManager) {
@@ -47,12 +56,41 @@ public class SaveToFile {
         zapytanie = entityManager.createQuery("SELECT e FROM Obecnosc e");
         PresenceList = (ArrayList) zapytanie.getResultList();
 
-        temp = new Temporary(MemberList,ClubList,PresidentList,MeetingList,PresenceList);
+      //  temp = new Temporary(MemberList,ClubList,PresidentList,MeetingList,PresenceList); //to ma byc oryginalnie
+        temp = new Temporary(MemberList); // dla testow
     }
 
-    public void readFromDBAndSaveToXML() {
 
-        XMLEncoder encoder = null;
+    PersistenceDelegate zonedDateTimeDelegate = new PersistenceDelegate() {
+        @Override
+        protected Expression instantiate(Object target, Encoder encoder2) {
+            ZonedDateTime other = (ZonedDateTime) target;
+            return new Expression(other, ZonedDateTime.class, "of",
+                    new Object[] {
+                            other.getYear(),
+                            other.getMonthValue(),
+                            other.getDayOfMonth(),
+                            other.getHour(),
+                            other.getMinute(),
+                            other.getSecond(),
+                            other.getNano(),
+                            other.getZone()
+                    });
+        }
+    };
+
+    PersistenceDelegate zoneIdDelegate = new PersistenceDelegate() {
+        @Override
+        protected Expression instantiate(Object target,
+                                         Encoder encoder2) {
+            ZoneId other = (ZoneId) target;
+            return new Expression(other, ZoneId.class, "of",
+                    new Object[] { other.getId() });
+        }
+    };
+
+    public void readFromDBAndSaveToXML() {
+       //encoder = null;
         try {
             encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(XMLFileName)));
 
@@ -60,11 +98,42 @@ public class SaveToFile {
             System.out.println("ERROR: While Creating or Opening the File: " + XMLFileName);
         }
 
+        encoder.setPersistenceDelegate(ZonedDateTime.class, zonedDateTimeDelegate);
+        for (Czlonek c: MemberList) {
+            encoder.setPersistenceDelegate(c.getJoingDate().getZone().getClass(), zoneIdDelegate);
+        }
+        for (Klub k: ClubList) {
+            encoder.setPersistenceDelegate(k.getOpeningDate().getZone().getClass(), zoneIdDelegate);
+        }
+        for (Prezes p: PresidentList) {
+            encoder.setPersistenceDelegate(p.getcadencyBegin().getZone().getClass(), zoneIdDelegate);
+            encoder.setPersistenceDelegate(p.getcadencyEnd().getZone().getClass(), zoneIdDelegate);
+        }
+        for (Spotkanie s: MeetingList) {
+            encoder.setPersistenceDelegate(s.getMeetingDate().getZone().getClass(), zoneIdDelegate);
+        }
+
+
         encoder.writeObject(temp);
         encoder.close();
     }
 
-    public void readFromDBAndSaveToJSON() {
 
+    public void readFromDBAndSaveToJSON() {
+       // JsonSerializer serializer = new JsonSerializer();
+        //using (StreamWriter sw = new StreamWriter(JSONFileName))
+        //using (JsonWriter writer = new JsonTextWriter(sw))
+        //{            serializer.Serialize(writer, temp);        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(JSONFileName);
+        try {
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            mapper.writeValue(file,temp);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

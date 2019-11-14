@@ -1,5 +1,7 @@
 package hibernate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.time.ZonedDateTime;
@@ -8,7 +10,7 @@ import java.util.*;
 /**
  * Created by agnzim on 06.05.2019.
  */
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "pp_kluby")
 public class Klub {
@@ -31,10 +33,12 @@ public class Klub {
     @JoinColumn(name="founder", referencedColumnName = "id")
     Czlonek founder2;
 
-    @OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
+    //@OneToMany(mappedBy = "myClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL) //cascade = CascadeType.ALL, orphanRemoval = true
+    @OneToMany(mappedBy = "myClub", fetch = FetchType.EAGER, cascade=CascadeType.ALL) // <dodano 08-09-2019>
     private Set<Czlonek> clubMember = new HashSet<Czlonek>();
 
-    @OneToMany(mappedBy = "hostedClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
+    //@OneToMany(mappedBy = "hostedClub", fetch = FetchType.LAZY, cascade=CascadeType.ALL) //cascade = CascadeType.ALL, orphanRemoval = true
+    @OneToMany(mappedBy = "hostedClub", fetch = FetchType.EAGER, cascade=CascadeType.ALL) //<dodano 08-09-2019>
     private Set<Spotkanie> meeting = new HashSet<Spotkanie>();
 
     public Klub() {}

@@ -37,7 +37,8 @@ public class Spotkanie {
     @JoinColumn(name = "clubId", referencedColumnName = "id")
     private Klub hostedClub;
 
-    @OneToMany(mappedBy = "presenceDuring", fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "presenceDuring", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "presenceDuring", fetch = FetchType.EAGER) //<dodano 08-09-2019>
     private Set<Obecnosc> presencesAtTheMeeting = new HashSet<Obecnosc>();
 
 

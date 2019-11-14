@@ -65,11 +65,12 @@ public class ReadFromFile { //TABELA PREZESURY SIE NIE WYPELNIA :(
         Temporary result = (Temporary) decoder.readObject();
         decoder.close();
         System.out.println("------- ROZPOCZYNAM JAKIS PROCES ----------");
-        for(int i=0; i<result.getPresidentList().size(); i++) {
-            System.out.println("ODCZYTALEM: " + result.getPresidentList().get(i));
+        for (int i = 0; i < result.getMemberList().size(); i++) {
+            System.out.println("ODCZYTALEM: " + result.getMemberList().get(i));
         }
+    }
 
-        entityManager.getTransaction().begin();
+  /*      entityManager.getTransaction().begin();
 
         for (int i = 0; i<result.getPresidentList().size(); i++) {
             entityManager.persist(result.getPresidentList().get(i));
@@ -94,7 +95,7 @@ public class ReadFromFile { //TABELA PREZESURY SIE NIE WYPELNIA :(
         entityManager.flush();
         entityManager.clear();
 
-    }
+    }*/
     /*
     public void readFromXMLAndWriteToDB() {
         if(XMLFileWasSavedBefore) {

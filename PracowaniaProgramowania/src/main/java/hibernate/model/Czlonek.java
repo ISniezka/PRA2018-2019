@@ -34,11 +34,13 @@ public class Czlonek {
     @Column(name = "dolaczenie", nullable = false)
     private ZonedDateTime joinDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(fetch = FetchType.LAZY) <dodano 08-09-2019>
+    @ManyToOne(fetch = FetchType.EAGER) //<dodano 08-09-2019>
     @JoinColumn(name = "club", referencedColumnName = "id")
     private Klub myClub;
 
-    @OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
+    //@OneToMany(mappedBy = "presenceBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true) //cascade = CascadeType.ALL, orphanRemoval = true
+    @OneToMany(mappedBy = "presenceBy", fetch = FetchType.EAGER, cascade = CascadeType.ALL) //<dodano 08-09-2019>
     private Set<Obecnosc> myMeeting = new HashSet<Obecnosc>();
 
     public Czlonek() {}

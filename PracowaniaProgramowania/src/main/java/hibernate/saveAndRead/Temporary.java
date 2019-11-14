@@ -15,6 +15,10 @@ public class Temporary {
     public Temporary() {
     }
 
+    public Temporary(ArrayList<Czlonek> memberList) {
+        MemberList = memberList;
+    }
+
     public Temporary(ArrayList<Czlonek> memberList, ArrayList<Klub> clubList, ArrayList<Prezes> presidentList, ArrayList<Spotkanie> meetingList, ArrayList<Obecnosc> presenceList) {
         MemberList = memberList;
         ClubList = clubList;

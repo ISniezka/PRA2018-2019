@@ -90,9 +90,18 @@ public class main {
                 }
                 System.out.println("------------ KOLEJNA STRONA -------------");
             }
-            //q.updateRecordInTableCzlonek(2,"nazwisko","NAZWISKOoooo"); //zmien nazwisko Bozenie
-            //SaveToFile s1 = new SaveToFile(entityManager);
-            //s1.readFromDBAndSaveToXML();
+            //q.updateRecordInTableCzlonek(2,"nazwisko","nazwisko"); //zmien nazwisko Bozenie
+            System.out.println("Tworze obiekt do zapisu z bazy danych do pliku");
+            SaveToFile s1 = new SaveToFile(entityManager);
+            System.out.println("Obiekt zostal utworzony");
+            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU JSONOWEGO !");
+            s1.readFromDBAndSaveToJSON();
+            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU JSONOWEGO !");
+
+            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+            s1.readFromDBAndSaveToXML();
+            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+
             ReadFromFile r1 = new ReadFromFile(entityManager);
             r1.readFromXMLAndWriteToDB();
 
@@ -125,6 +134,11 @@ public class main {
 
         ArrayList<Klub> ClubList = new ArrayList<>();
 
+        /* ABY UNIKNAC java.lang.InstantiationException: java.time.ZonedDateTime, to zamiast zapisu daty w formacie:
+                ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]"),2,MemberList.get(1)));
+                trzeba ja zapisac:
+                ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]").toLocalDateTime().atZone(ZoneId.of("CET")),2,MemberList.get(1)));
+         */
         ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]"),2,MemberList.get(1)));
         ClubList.add(new Klub("PoznajToastmasters", ZonedDateTime.parse("2018-07-01T00:00:00Z[CET]"),8,MemberList.get(7)));
         ClubList.add(new Klub("Kontestmastes", ZonedDateTime.parse("2019-01-10T00:00:00Z[CET]"),11,MemberList.get(10)));

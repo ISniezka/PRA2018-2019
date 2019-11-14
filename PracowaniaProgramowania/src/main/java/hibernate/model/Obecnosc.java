@@ -18,11 +18,13 @@ public class Obecnosc implements Serializable {
     @EmbeddedId
     private ObecnoscPK obecnoscpk;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) //<dodano 08-09-2019>
     @JoinColumn(name = "idMeeting", referencedColumnName = "id")
     private Spotkanie presenceDuring;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) //<dodano 08-09-2019>
     @JoinColumn(name = "idPerson", referencedColumnName = "id")
     private Czlonek presenceBy;
 
