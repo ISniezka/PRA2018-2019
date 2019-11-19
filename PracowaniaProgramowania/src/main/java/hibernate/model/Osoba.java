@@ -9,7 +9,7 @@ public class Osoba {
 
     @Id
     @GeneratedValue(generator = "gen3")
-    @SequenceGenerator(name = "gen3", sequenceName = "pupil3_seq")
+    @SequenceGenerator(name = "gen3", sequenceName = "osoba_seq")
     @Column(name = "pesel", nullable = false)
     private String pesel;
 

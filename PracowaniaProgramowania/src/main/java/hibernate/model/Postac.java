@@ -9,7 +9,7 @@ public class Postac<pet> {
 
     @Id
     @GeneratedValue(generator = "gen2")
-    @SequenceGenerator(name = "gen2", sequenceName = "pupil2_seq")
+    @SequenceGenerator(name = "gen2", sequenceName = "postac_seq")
     @Column(name = "nick", nullable = false)
     private String nick;
 

@@ -11,7 +11,7 @@ public class Konto {
 
     @Id
     @GeneratedValue(generator = "gen4")
-    @SequenceGenerator(name = "gen4", sequenceName = "pupil4_seq")
+    @SequenceGenerator(name = "gen4", sequenceName = "konto_seq")
     @Column(name = "id", nullable = false)
     private int id;
 

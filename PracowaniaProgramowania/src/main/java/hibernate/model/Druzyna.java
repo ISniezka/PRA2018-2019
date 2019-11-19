@@ -14,7 +14,7 @@ public class Druzyna {
 
     @Id
     @GeneratedValue(generator = "gen5")
-    @SequenceGenerator(name = "gen5", sequenceName = "pupil5_seq")
+    @SequenceGenerator(name = "gen5", sequenceName = "druzyna_seq")
     @Column(name = "nazwa", nullable = false)
     private String teamName;
 
