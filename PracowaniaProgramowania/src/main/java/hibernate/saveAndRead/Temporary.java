@@ -6,64 +6,40 @@ import java.util.ArrayList;
 
 public class Temporary {
 
-    private ArrayList <Czlonek> MemberList;
-    private ArrayList <Klub> ClubList;
-    private ArrayList <Prezes> PresidentList;
-    private ArrayList <Spotkanie> MeetingList;
-    private ArrayList <Obecnosc> PresenceList;
+    private ArrayList <Druzyna> TeamsList;
+    private ArrayList <Konto> AccountsList;
+    private ArrayList <Osoba> PeopleList;
+    private ArrayList <Postac> CharactersList;
+    private ArrayList <Pupil> PetsList;
 
-    public Temporary() {
+    public Temporary() { }
+
+    public Temporary(ArrayList<Druzyna> teamsList, ArrayList<Osoba> peopleList, ArrayList<Postac> charactersList) {
+        TeamsList = teamsList;
+        PeopleList = peopleList;
+        CharactersList = charactersList;
     }
 
-    public Temporary(ArrayList<Czlonek> memberList) {
-        MemberList = memberList;
+    public Temporary(ArrayList<Druzyna> teamsList, ArrayList<Konto> accountsList, ArrayList<Osoba> peopleList, ArrayList<Postac> charactersList, ArrayList<Pupil> petsList) {
+        TeamsList = teamsList;
+        AccountsList = accountsList;
+        PeopleList = peopleList;
+        CharactersList = charactersList;
+        PetsList = petsList;
     }
 
-    public Temporary(ArrayList<Czlonek> memberList, ArrayList<Klub> clubList, ArrayList<Prezes> presidentList, ArrayList<Spotkanie> meetingList, ArrayList<Obecnosc> presenceList) {
-        MemberList = memberList;
-        ClubList = clubList;
-        PresidentList = presidentList;
-        MeetingList = meetingList;
-        PresenceList = presenceList;
-    }
+    public ArrayList<Druzyna> getTeamsList() { return TeamsList; }
+    public void setTeamsList(ArrayList<Druzyna> teamsList) { TeamsList = teamsList; }
 
-    public ArrayList<Czlonek> getMemberList() {
-        return MemberList;
-    }
+    public ArrayList<Konto> getAccountsList() { return AccountsList; }
+    public void setAccountsList(ArrayList<Konto> accountsList) { AccountsList = accountsList; }
 
-    public void setMemberList(ArrayList<Czlonek> memberList) {
-        MemberList = memberList;
-    }
+    public ArrayList<Osoba> getPeopleList() { return PeopleList; }
+    public void setPeopleList(ArrayList<Osoba> peopleList) { PeopleList = peopleList; }
 
-    public ArrayList<Klub> getClubList() {
-        return ClubList;
-    }
+    public ArrayList<Postac> getCharactersList() { return CharactersList; }
+    public void setCharactersList(ArrayList<Postac> charactersList) { CharactersList = charactersList; }
 
-    public void setClubList(ArrayList<Klub> clubList) {
-        ClubList = clubList;
-    }
-
-    public ArrayList<Prezes> getPresidentList() {
-        return PresidentList;
-    }
-
-    public void setPresidentList(ArrayList<Prezes> presidentList) {
-        PresidentList = presidentList;
-    }
-
-    public ArrayList<Spotkanie> getMeetingList() {
-        return MeetingList;
-    }
-
-    public void setMeetingList(ArrayList<Spotkanie> meetingList) {
-        MeetingList = meetingList;
-    }
-
-    public ArrayList<Obecnosc> getPresenceList() {
-        return PresenceList;
-    }
-
-    public void setPresenceList(ArrayList<Obecnosc> presenceList) {
-        PresenceList = presenceList;
-    }
+    public ArrayList<Pupil> getPetsList() { return PetsList; }
+    public void setPetsList(ArrayList<Pupil> petsList) { PetsList = petsList; }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queries {
-
+/*
     EntityManager entityManager;
 
     public Queries(EntityManager entityManager) {
@@ -20,7 +20,7 @@ public class Queries {
         TypedQuery<Employee> query = entityManager.createQuery(
                 "SELECT c FROM Employee c WHERE c.lastName LIKE :name", Employee.class);
         return query.setParameter("name", "%" + name + "%").getResultList();
-    }*/
+    }
 
     public void updateTable(String tableName, String fieldName, String newValueOfTheField, int ...id) {
         entityManager.getTransaction().begin();
@@ -106,5 +106,5 @@ public class Queries {
 
         return (ArrayList) query.getResultList();
     }
-
+*/
 }

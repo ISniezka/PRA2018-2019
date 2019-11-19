@@ -28,42 +28,43 @@ public class SaveToFile {
     private String XMLFileName = "zapisXML.xml";
     private String JSONFileName = "zapisJSON.json";
 
-    private ArrayList <Czlonek> MemberList;
-    private ArrayList <Klub> ClubList;
-    private ArrayList <Prezes> PresidentList;
-    private ArrayList <Spotkanie> MeetingList;
-    private ArrayList <Obecnosc> PresenceList;
+    private ArrayList <Druzyna> TeamsList;
+    private ArrayList <Konto> AccountsList;
+    private ArrayList <Osoba> PeopleList;
+    private ArrayList <Postac> CharactersList;
+    private ArrayList <Pupil> PetsList;
 
     private Temporary temp;
-    public XMLEncoder encoder = null;
+    private XMLEncoder encoder = null;
     private EntityManager entityManager;
 
     public SaveToFile(EntityManager entityManager) {
         this.entityManager = entityManager;
 
-        Query zapytanie = entityManager.createQuery("SELECT e FROM Czlonek e");
-        MemberList = (ArrayList) zapytanie.getResultList();
+        Query zapytanie = entityManager.createQuery("SELECT e FROM Druzyna e");
+        TeamsList = (ArrayList) zapytanie.getResultList();
 
-        zapytanie = entityManager.createQuery("SELECT e FROM Klub e");
-        ClubList = (ArrayList) zapytanie.getResultList();
+        zapytanie = entityManager.createQuery("SELECT e FROM Konto e");
+        AccountsList = (ArrayList) zapytanie.getResultList();
 
-        zapytanie = entityManager.createQuery("SELECT e FROM Prezes e");
-        PresidentList = (ArrayList) zapytanie.getResultList();
+        zapytanie = entityManager.createQuery("SELECT e FROM Osoba e");
+        PeopleList = (ArrayList) zapytanie.getResultList();
+        //for(Osoba o : PeopleList) System.out.println("Wczytuje W SAVETOFILE: " + o.toString() );
+        zapytanie = entityManager.createQuery("SELECT e FROM Postac e");
+        CharactersList = (ArrayList) zapytanie.getResultList();
 
-        zapytanie = entityManager.createQuery("SELECT e FROM Spotkanie e");
-        MeetingList = (ArrayList) zapytanie.getResultList();
+        zapytanie = entityManager.createQuery("SELECT e FROM Pupil e");
+        PetsList = (ArrayList) zapytanie.getResultList();
 
-        zapytanie = entityManager.createQuery("SELECT e FROM Obecnosc e");
-        PresenceList = (ArrayList) zapytanie.getResultList();
-
-      //  temp = new Temporary(MemberList,ClubList,PresidentList,MeetingList,PresenceList); //to ma byc oryginalnie
-        temp = new Temporary(MemberList); // dla testow
+        temp = new Temporary(TeamsList,AccountsList,PeopleList,CharactersList,PetsList); //to ma byc oryginalnie
+        //temp = new Temporary(TeamsList,PeopleList,CharactersList);
+        //temp = new Temporary(TeamsList); // dla testow
     }
 
 
     PersistenceDelegate zonedDateTimeDelegate = new PersistenceDelegate() {
         @Override
-        protected Expression instantiate(Object target, Encoder encoder2) {
+        protected Expression instantiate(Object target, Encoder encoder) {
             ZonedDateTime other = (ZonedDateTime) target;
             return new Expression(other, ZonedDateTime.class, "of",
                     new Object[] {
@@ -81,8 +82,7 @@ public class SaveToFile {
 
     PersistenceDelegate zoneIdDelegate = new PersistenceDelegate() {
         @Override
-        protected Expression instantiate(Object target,
-                                         Encoder encoder2) {
+        protected Expression instantiate(Object target, Encoder encoder) {
             ZoneId other = (ZoneId) target;
             return new Expression(other, ZoneId.class, "of",
                     new Object[] { other.getId() });
@@ -90,34 +90,18 @@ public class SaveToFile {
     };
 
     public void readFromDBAndSaveToXML() {
-       //encoder = null;
         try {
             encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(XMLFileName)));
+            encoder.setPersistenceDelegate(ZonedDateTime.class, zonedDateTimeDelegate);
+
+            for(Konto k : AccountsList) encoder.setPersistenceDelegate(k.getCreationDate().getZone().getClass(), zoneIdDelegate);
+            encoder.writeObject(temp);
+            encoder.close();
 
         } catch (FileNotFoundException e) {
             System.out.println("ERROR: While Creating or Opening the File: " + XMLFileName);
         }
-
-        encoder.setPersistenceDelegate(ZonedDateTime.class, zonedDateTimeDelegate);
-        for (Czlonek c: MemberList) {
-            encoder.setPersistenceDelegate(c.getJoingDate().getZone().getClass(), zoneIdDelegate);
-        }
-        for (Klub k: ClubList) {
-            encoder.setPersistenceDelegate(k.getOpeningDate().getZone().getClass(), zoneIdDelegate);
-        }
-        for (Prezes p: PresidentList) {
-            encoder.setPersistenceDelegate(p.getcadencyBegin().getZone().getClass(), zoneIdDelegate);
-            encoder.setPersistenceDelegate(p.getcadencyEnd().getZone().getClass(), zoneIdDelegate);
-        }
-        for (Spotkanie s: MeetingList) {
-            encoder.setPersistenceDelegate(s.getMeetingDate().getZone().getClass(), zoneIdDelegate);
-        }
-
-
-        encoder.writeObject(temp);
-        encoder.close();
     }
-
 
     public void readFromDBAndSaveToJSON() {
        // JsonSerializer serializer = new JsonSerializer();

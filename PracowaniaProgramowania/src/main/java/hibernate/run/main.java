@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
+import com.mysql.cj.exceptions.CJCommunicationsException;
 import hibernate.model.*;
 import hibernate.queries.Queries;
 import hibernate.saveAndRead.ReadFromFile;
@@ -22,20 +23,22 @@ import java.util.List;
 public class main {
 
 
-    public List<Czlonek> getMembersByName(String name, EntityManager entityManager) {
+   /* public List<Czlonek> getMembersByName(String name, EntityManager entityManager) {
 
         TypedQuery<Czlonek> query = entityManager.createQuery("SELECT c FROM Czlonek c WHERE c.nazwisko LIKE :name", Czlonek.class);
         return query.setParameter("name", "%" + name + "%").getResultList();
-    }
+    } */
 
     public static void main(String[] args) {
 
         EntityManagerFactory entityManagerFactory = null;
         EntityManager entityManager = null;
+        //EntityManager entityManager2 = null;
 
         try {
             entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-dynamic"); //taka nazwa jak w persistence.xml
             entityManager = entityManagerFactory.createEntityManager(); //utworz entityManagera
+            //entityManager2 = entityManagerFactory.createEntityManager(); //utworz entityManagera
             entityManager.getTransaction().begin(); // rozpocznij transakcje
 
             generacjaDanych(entityManager);
@@ -46,10 +49,23 @@ public class main {
 
             // Pobieranie danych
 
-            //Query zapytanie = entityManager.createQuery("Select firstName FROM Czlonek");
-            //System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
+            Query zapytanie = entityManager.createQuery("Select firstName FROM Osoba");
+            System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
 
-            System.out.println("PIERWSZE ODCZYTANIE");
+            SaveToFile s1 = new SaveToFile(entityManager);
+            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU JSONOWEGO !");
+            s1.readFromDBAndSaveToJSON();
+            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU JSONOWEGO !");
+
+            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+            s1.readFromDBAndSaveToXML();
+            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+
+            ReadFromFile r1 = new ReadFromFile(entityManager);
+            r1.readFromXMLAndWriteToDB();
+            //r1.ClearAllTables();
+
+/*            System.out.println("PIERWSZE ODCZYTANIE");
             Query zapytanie1 = entityManager.createQuery("SELECT e FROM Czlonek e");
             List<Czlonek> czlonkowie = zapytanie1.getResultList();
             for(Czlonek cz : czlonkowie){
@@ -104,199 +120,62 @@ public class main {
 
             ReadFromFile r1 = new ReadFromFile(entityManager);
             r1.readFromXMLAndWriteToDB();
-
+ */
         }catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed, tu masz dlaczego\n" + ex);
         } finally {
             entityManagerFactory.close();
         }
-
     }
 
 
 
 
-    public static void generacjaDanych(EntityManager entityManager){
+    public static void generacjaDanych(EntityManager entityManager) {
+        System.out.println("1) Jestem przed tworzeniem kont");
 
-        ArrayList<Czlonek> MemberList = new ArrayList<>();
+        ArrayList<Konto> AccountsList = new ArrayList<>();
+        AccountsList.add(new Konto("kubaBor","kubaBor123",ZonedDateTime.now().minusDays(2)));
+        AccountsList.add(new Konto("BoTo","BoTo123",ZonedDateTime.now().minusDays(3)));
+        AccountsList.add(new Konto("ToKura","ToKura123",ZonedDateTime.now().minusDays(4)));
+        AccountsList.add(new Konto("KrGr","KrGr123",ZonedDateTime.now().minusDays(5)));
 
-        MemberList.add(new Czlonek(true,"Jakub","Borewicz",1, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Bożena","Tomaszewicz",1, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Tomasz","Kurowicz",1, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Krzysztof","Grunkiewicz",1, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Joanna","Polewicz",1, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Błażej","Janicki",2, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"olaf","Kurnicki",2, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Cytryna","Słodzicka",2, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Karolina","Sznycelnicka",2, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Jolanta","Zanicka",2, ZonedDateTime.now() ));
-        MemberList.add(new Czlonek(true,"Krystyna","Radziwiłówna",3, ZonedDateTime.now() ));
+        System.out.println("2) Po stworzeniu kont, przed twrozeniem Osob");
 
-        ArrayList<Klub> ClubList = new ArrayList<>();
+        ArrayList<Osoba> PeopleList = new ArrayList<>();
+        PeopleList.add(new Osoba("00240857435","Jakub", "Borewicz", AccountsList.get(0)));
+        PeopleList.add(new Osoba("81031971754","Bożena", "Tomaszewicz", AccountsList.get(1)));
+        PeopleList.add(new Osoba("92102662558","Tomasz", "Kurowicz", AccountsList.get(2)));
+        PeopleList.add(new Osoba("86051865717","Krzysztof", "Grunkiewicz", AccountsList.get(3)));
+        PeopleList.add(new Osoba("78090512633","Błażej", "Polewicz"));
+        System.out.println("3) Po osobach, przed Druzyna");
 
-        /* ABY UNIKNAC java.lang.InstantiationException: java.time.ZonedDateTime, to zamiast zapisu daty w formacie:
-                ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]"),2,MemberList.get(1)));
-                trzeba ja zapisac:
-                ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]").toLocalDateTime().atZone(ZoneId.of("CET")),2,MemberList.get(1)));
-         */
-        ClubList.add(new Klub("Toastmasters Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]"),2,MemberList.get(1)));
-        ClubList.add(new Klub("PoznajToastmasters", ZonedDateTime.parse("2018-07-01T00:00:00Z[CET]"),8,MemberList.get(7)));
-        ClubList.add(new Klub("Kontestmastes", ZonedDateTime.parse("2019-01-10T00:00:00Z[CET]"),11,MemberList.get(10)));
+        ArrayList<Postac> CharactersList = new ArrayList<>();
+        CharactersList.add(new Postac("WalecznaWalkyria",1));
+        CharactersList.add(new Postac("JohnRambo",2));
+        CharactersList.add(new Postac("JamesBond",2));
+        CharactersList.add(new Postac("LeeMinHoo",4));
+        CharactersList.add(new Postac("NaniNani",4));
+        CharactersList.add(new Postac("KimSeJin",4));
 
-        for(int i=0; i<MemberList.size(); i++){
-            int c = MemberList.get(i).getClub();
-            ClubList.get(c-1).addMemberToTheClub(MemberList.get(i));
-        }
+        ArrayList<Druzyna> TeamsList = new ArrayList<>();
+        TeamsList.add(new Druzyna("RocketPower"));
 
-        ArrayList<Prezes> PresidentList = new ArrayList<>();
+        CharactersList.get(0).setTeam(TeamsList.get(0).getTeamName());
+        CharactersList.get(1).setTeam(TeamsList.get(0).getTeamName());
+        CharactersList.get(3).setTeam(TeamsList.get(0).getTeamName());
 
-        PresidentList.add(new Prezes(1,1,ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]"),ZonedDateTime.parse("2017-12-31T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(2,1,ZonedDateTime.parse("2018-01-01T00:00:00Z[CET]"),ZonedDateTime.parse("2018-06-30T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(3,1,ZonedDateTime.parse("2018-07-01T00:00:00Z[CET]"),ZonedDateTime.parse("2018-12-31T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(4,1,ZonedDateTime.parse("2019-01-01T00:00:00Z[CET]"),ZonedDateTime.parse("2019-06-30T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(7,2,ZonedDateTime.parse("2018-07-01T00:00:00Z[CET]"),ZonedDateTime.parse("2018-12-31T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(6,2,ZonedDateTime.parse("2019-01-01T00:00:00Z[CET]"),ZonedDateTime.parse("2019-06-30T00:00:00Z[CET]")));
-        PresidentList.add(new Prezes(11,3,ZonedDateTime.parse("2019-01-10T00:00:00Z[CET]"),ZonedDateTime.parse("2019-06-30T00:00:00Z[CET]")));
-//  OSTATECZNE USTAWIEINE PREZESÓW
-        for(int i=0; i<PresidentList.size(); i++){
-            int c = PresidentList.get(i).getPresidentId();
-            PresidentList.get(i).setPresident(MemberList.get(c-1));
-        }
+        ArrayList<Pupil> PetsList = new ArrayList<>();
+        PetsList.add(new Pupil("Okruszek","Pies"));
 
-        ArrayList<Spotkanie> MeetingList = new ArrayList<>();
+        CharactersList.get(0).setPet(PetsList.get(0));
 
-// 23 spotkań Poznaj
-        MeetingList.add(new Spotkanie(1,"Toastmasters w Poznaniu!", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-07-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"a", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-08-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"b", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-09-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"c", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-10-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"d", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-11-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"e", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2017-12-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"f", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-01-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"g", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-02-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"h", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-03-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"n", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-04-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"k", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-05-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"u", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-06-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"t", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-07-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"e", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-08-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"g", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-09-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"h", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-10-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"i", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-11-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"o", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2018-12-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"d", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2019-01-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"a", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2019-02-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"p", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2019-03-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"q", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2019-04-20T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(1,"y", "Rondo Kaponiera 5, Poznań", ZonedDateTime.parse("2019-05-20T00:00:00Z[CET]")));
-// 11 spotkań Poznaj
-        MeetingList.add(new Spotkanie(2,"PoznajToastmasters - Zaczynamy", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-07-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Gorrrące spotkanie", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-08-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Papugi", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-09-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Złota Polska Jesień", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-10-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Zaduma", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-11-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Spotkanie Świąteczne", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2018-12-01T00:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Nowy Rok", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2019-01-05T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Taniec na lodzie", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2019-02-05T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Konkurs mów", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2019-03-05T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Wielkanoc", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2019-04-05T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(2,"Dzień Dziecka", "Powstańców Wielkopolskich 2A Poznań", ZonedDateTime.parse("2019-05-05T19:00:00Z[CET]")));
-// 5 spotkań kontestów
-        MeetingList.add(new Spotkanie(3,"Pierwsze spotkanie klubu KontestMasters", "Ratajczaka 5/7 Poznań", ZonedDateTime.parse("2019-01-10T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(3,"Jak zaczać", "Ratajczaka 5/7 Poznań", ZonedDateTime.parse("2019-02-01T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(3,"Powoli do przodu", "Ratajczaka 5/7 Poznań", ZonedDateTime.parse("2019-03-10T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(3,"Unia Europejska", "Ratajczaka 5/7 Poznań", ZonedDateTime.parse("2019-04-10T19:00:00Z[CET]")));
-        MeetingList.add(new Spotkanie(3,"Idę na wybory", "Ratajczaka 5/7 Poznań", ZonedDateTime.parse("2019-05-10T19:00:00Z[CET]")));
+        for(Konto k : AccountsList) entityManager.persist(k);
+        for(Osoba o : PeopleList) entityManager.persist(o);
+        for(Druzyna d : TeamsList) entityManager.persist(d);
+        for(Postac p : CharactersList) entityManager.persist(p);
+        for(Pupil p : PetsList) entityManager.persist(p);
 
-// OSTATECZNE USTAWIEINE KLUBU
-        for(int i=0; i<MeetingList.size(); i++){
-            int c = MeetingList.get(i).getClubId();
-            ClubList.get(c-1).addClubMeeting(MeetingList.get(i));
-        }
-
-//   OSTATECZNE USTAWIEINE CZŁONKÓW
-        for(int i=0; i<MemberList.size(); i++){
-            int c = MemberList.get(i).getClub();
-            MemberList.get(i).setMyClub(ClubList.get(c-1));
-        }
-
-        ArrayList<Obecnosc> PresenceList = new ArrayList<>();
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,1)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,2)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,3)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,4)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,5)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,6)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,7)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,8)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,9)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,10)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,11)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,13)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,17)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,18)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,19)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,20)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,21)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,22)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(1,23)));
-
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,1)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,2)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,3)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,4)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,5)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,6)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,9)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,10)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,12)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,13)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,15)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,17)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,18)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,21)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,22)));
-        PresenceList.add(new Obecnosc(new ObecnoscPK(2,23)));
-
-        PresenceList.add(new Obecnosc(new ObecnoscPK(3,37)));
-
-//   OSTATECZNE USTAWIEINE SPOTKAŃ
-        for(int i=0; i<PresenceList.size(); i++){
-            int c = PresenceList.get(i).getMeeting();
-            MeetingList.get(c-1).addPresencesAtTheMeeting(PresenceList.get(i));
-        }
-        for(int i=0; i<MeetingList.size(); i++){
-            int c = MeetingList.get(i).getClubId();
-            MeetingList.get(i).setHostedClub(ClubList.get(c-1));
-        }
-
-//   OSTATECZNE USTAWIEINE OBECNOŚCI
-        for (int i = 0; i< PresenceList.size(); i++){
-            int c = PresenceList.get(i).getMeeting();
-            int e = PresenceList.get(i).getPerson();
-            PresenceList.get(i).setPresenceDuring(MeetingList.get(c-1));
-            PresenceList.get(i).setPresenceBy(MemberList.get(e-1));
-        }
-
-        for (int i = 0; i<PresenceList.size(); i++) {
-            entityManager.persist(PresenceList.get(i));
-        }
-
-        for (int i = 0; i<MemberList.size() ; i++) {
-            entityManager.persist(MemberList.get(i));
-        }
-
-        for (int i = 0; i<ClubList.size(); i++) {
-            entityManager.persist(ClubList.get(i));
-        }
-
-        for (int i = 0; i<PresidentList.size(); i++) {
-            entityManager.persist(PresidentList.get(i));
-        }
-
-        for (int i = 0; i<MeetingList.size(); i++) {
-            entityManager.persist(MeetingList.get(i));
-        }
     };
 
 }
