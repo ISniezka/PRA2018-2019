@@ -67,7 +67,7 @@ public class ReadFromFile {
             result.getPeopleList().get(2).setAccount(result.getAccountsList().get(2));
             result.getPeopleList().get(3).setAccount(result.getAccountsList().get(3));
             result.getCharactersList().get(0).setPet(result.getPetsList().get(0));
-
+            for(Konto p : result.getAccountsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
             writeToDB(result);
             decoder.close();
 
@@ -95,6 +95,7 @@ public class ReadFromFile {
             result.getCharactersList().get(0).setPet(result.getPetsList().get(0));
             for (Konto k : result.getAccountsList()) k.setId(null);
 
+            for(Konto p : result.getAccountsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
             for(Pupil p : result.getPetsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
 
             writeToDB(result);
@@ -113,26 +114,23 @@ public class ReadFromFile {
 
         System.out.println("persist pupilow");
         for (Pupil p : result.getPetsList()) { p.setId(null); entityManager.persist(p); }
-        entityManager.getTransaction().commit();
 
-        entityManager.getTransaction().begin();
         System.out.println("persist  druzyn");
         for (Druzyna d : result.getTeamsList()) entityManager.persist(d);
-        entityManager.getTransaction().commit();
 
-        entityManager.getTransaction().begin();
         System.out.println("persist  postaci");
         for (Postac p : result.getCharactersList()) entityManager.persist(p);
-        entityManager.getTransaction().commit();
 
-        entityManager.getTransaction().begin();
-        System.out.println("persist  osob");
-        for (Osoba o : result.getPeopleList())  {entityManager.persist(o);}
-        entityManager.getTransaction().commit();
-
-        entityManager.getTransaction().begin();
         System.out.println("persist  kont");
         for (Konto k : result.getAccountsList()) { entityManager.persist(k);}
+        entityManager.getTransaction().commit();
+
+        session = entityManager.unwrap(Session.class);
+        session.clear();
+        entityManager.getTransaction().begin();
+
+        System.out.println("persist  osob");
+        for (Osoba o : result.getPeopleList())  {entityManager.merge(o);}
         entityManager.getTransaction().commit();
 
         System.out.println("Nadpisano bazę danych informacjami z pliku");

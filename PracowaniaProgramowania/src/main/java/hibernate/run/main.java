@@ -65,6 +65,7 @@ public class main {
 
             ReadFromFile r1 = new ReadFromFile(entityManager);
 
+            System.out.println("ZAPISALEM XML !");
             r1.readFromXML();
 
             //zapytania.addTeam(new Druzyna("Heroes"));

@@ -68,6 +68,34 @@ public class Queries {
         return query.getResultList();
     }
 
+   /* public int sumPages(int ...pageSize) {
+
+        Query queryTotal = entityManager.createQuery("Select count(o) from Osoba o");
+        long countResult = (long) queryTotal.getSingleResult();
+        int pageNumber = (int) ((countResult / pageSize) + 1);
+        return pageNumber;
+    }
+
+    public ArrayList <Obecnosc> getAllPresenceByPage(int size, int pagenr) {
+        //calculate total number
+        Query queryTotal = entityManager.createQuery
+                ("Select count(e) from Obecnosc e");
+        long countResult = (long)queryTotal.getSingleResult();
+
+        //create query
+        Query query = entityManager.createQuery("Select e FROM Obecnosc e");
+        //set pageSize
+        int pageSize = size;
+        //calculate number of pages
+        int pageNumber = (int) ((countResult / pageSize) + 1);
+
+        if (pagenr > pageNumber) pagenr = pageNumber;
+        query.setFirstResult((pagenr-1) * pageSize);
+        query.setMaxResults(pageSize);
+
+        return (ArrayList) query.getResultList();
+    } */
+
 /*
     public void updateTable(String tableName, String fieldName, String newValueOfTheField, int ...id) {
         entityManager.getTransaction().begin();

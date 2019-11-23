@@ -18,7 +18,7 @@ public class Osoba {
     @Column(name = "nazwisko", nullable = false)
     private String lastName;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne//(cascade = CascadeType.ALL)
     @JoinColumn(name="konto", nullable = true, referencedColumnName = "id")//, referencedColumnName = "id")
     @JsonBackReference
     Konto account;
