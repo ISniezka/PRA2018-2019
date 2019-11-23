@@ -25,8 +25,8 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class SaveToFile {
 
-    private String XMLFileName = "zapisXML.xml";
-    private String JSONFileName = "zapisJSON.json";
+    private String XMLFileName = "XML.xml";
+    private String JSONFileName = "JSON.json";
 
     private ArrayList <Druzyna> TeamsList;
     private ArrayList <Konto> AccountsList;
@@ -40,6 +40,9 @@ public class SaveToFile {
 
     public SaveToFile(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    private void prepareData() {
 
         Query zapytanie = entityManager.createQuery("SELECT e FROM Druzyna e");
         TeamsList = (ArrayList) zapytanie.getResultList();
@@ -49,16 +52,14 @@ public class SaveToFile {
 
         zapytanie = entityManager.createQuery("SELECT e FROM Osoba e");
         PeopleList = (ArrayList) zapytanie.getResultList();
-        //for(Osoba o : PeopleList) System.out.println("Wczytuje W SAVETOFILE: " + o.toString() );
+
         zapytanie = entityManager.createQuery("SELECT e FROM Postac e");
         CharactersList = (ArrayList) zapytanie.getResultList();
 
         zapytanie = entityManager.createQuery("SELECT e FROM Pupil e");
         PetsList = (ArrayList) zapytanie.getResultList();
 
-        temp = new Temporary(TeamsList,AccountsList,PeopleList,CharactersList,PetsList); //to ma byc oryginalnie
-        //temp = new Temporary(TeamsList,PeopleList,CharactersList);
-        //temp = new Temporary(TeamsList); // dla testow
+        temp = new Temporary(TeamsList,AccountsList,PeopleList,CharactersList,PetsList);
     }
 
 
@@ -90,6 +91,7 @@ public class SaveToFile {
     };
 
     public void readFromDBAndSaveToXML() {
+        prepareData();
         try {
             encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(XMLFileName)));
             encoder.setPersistenceDelegate(ZonedDateTime.class, zonedDateTimeDelegate);
@@ -104,16 +106,14 @@ public class SaveToFile {
     }
 
     public void readFromDBAndSaveToJSON() {
-       // JsonSerializer serializer = new JsonSerializer();
-        //using (StreamWriter sw = new StreamWriter(JSONFileName))
-        //using (JsonWriter writer = new JsonTextWriter(sw))
-        //{            serializer.Serialize(writer, temp);        }
 
+        prepareData();
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(JSONFileName);
         try {
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            mapper.enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID); //DODANO aby moc odczytac poprawny ZONE w metodzie readFromJSON
             mapper.writeValue(file,temp);
 
         } catch (IOException e) {

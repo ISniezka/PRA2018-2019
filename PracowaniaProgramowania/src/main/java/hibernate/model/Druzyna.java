@@ -13,16 +13,12 @@ import java.util.*;
 public class Druzyna {
 
     @Id
-    @GeneratedValue(generator = "gen5")
-    @SequenceGenerator(name = "gen5", sequenceName = "druzyna_seq")
-    @Column(name = "nazwa", nullable = false)
     private String teamName;
 
     @Column(name = "punkty", nullable = false)
     private int points;
 
-    @OneToMany(orphanRemoval=true)//, cascade = CascadeType.MERGE)//, orphanRemoval=true) //, cascade = CascadeType.ALL) //<dodano 08-09-2019>
-    @JoinColumn(name = "druzyna")//, referencedColumnName = "druzyna")
+    @OneToMany(mappedBy = "druzyna")
     private Set<Postac> teamMembers  = new HashSet<Postac>();
 
     public Druzyna() {}

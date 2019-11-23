@@ -1,5 +1,7 @@
 package hibernate.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.lang.*;
 
@@ -8,9 +10,6 @@ import java.lang.*;
 public class Osoba {
 
     @Id
-    @GeneratedValue(generator = "gen3")
-    @SequenceGenerator(name = "gen3", sequenceName = "osoba_seq")
-    @Column(name = "pesel", nullable = false)
     private String pesel;
 
     @Column(name = "imie", nullable = false)
@@ -19,8 +18,9 @@ public class Osoba {
     @Column(name = "nazwisko", nullable = false)
     private String lastName;
 
-    @OneToOne(orphanRemoval=true)//, cascade = CascadeType.MERGE)//, orphanRemoval = true)
-    @JoinColumn(name="idkonta")//, referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="konto", nullable = true, referencedColumnName = "id")//, referencedColumnName = "id")
+    @JsonBackReference
     Konto account;
 
     public Osoba() {}
@@ -56,17 +56,17 @@ public class Osoba {
         String cokolwiek;
         if (account != null)
         {
-         cokolwiek = "Osoba{" +
-                "pesel=" + pesel +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", account='" + account.toString() + '}';}
+            cokolwiek = "Osoba{" +
+                    "pesel=" + pesel +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", account='" + account.toString() + '}';}
         else {
             cokolwiek = "Osoba{" +
-                "pesel=" + pesel +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", account= null'" +'}';}
+                    "pesel=" + pesel +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", account= null'" +'}';}
 
         return cokolwiek;
     }

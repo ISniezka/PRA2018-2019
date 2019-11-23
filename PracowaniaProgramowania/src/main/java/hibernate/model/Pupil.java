@@ -15,7 +15,7 @@ public class Pupil {
     @GeneratedValue(generator = "gen")
     @SequenceGenerator(name = "gen", sequenceName = "pupil_seq")
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "imie", nullable = false)
     private String name;
@@ -23,14 +23,21 @@ public class Pupil {
     @Column(name = "typ", nullable = false)
     private String animalType;
 
+    @OneToOne(mappedBy = "pet")
+    Postac postac;
+
+
     public Pupil() {}
+
     public Pupil(String name, String animalType) {
         this.name = name;
         this.animalType = animalType;
     }
 
+
+
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

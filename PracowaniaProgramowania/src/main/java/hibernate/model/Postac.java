@@ -1,5 +1,7 @@
 package hibernate.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.lang.*;
 
@@ -8,9 +10,6 @@ import java.lang.*;
 public class Postac<pet> {
 
     @Id
-    @GeneratedValue(generator = "gen2")
-    @SequenceGenerator(name = "gen2", sequenceName = "postac_seq")
-    @Column(name = "nick", nullable = false)
     private String nick;
 
     @Column(name = "druzyna")
@@ -19,18 +18,39 @@ public class Postac<pet> {
     @Column(name = "idKonta", nullable = false)
     private int accountID;
 
-    @OneToOne(orphanRemoval = true)//, cascade = CascadeType.MERGE)//, orphanRemoval=true)
-    @JoinColumn(name = "idpupila")//, referencedColumnName = "id")
-            Pupil pet;
+    @OneToOne (cascade = CascadeType.ALL)
+    @JoinColumn(name = "idpupila", nullable = true, referencedColumnName = "id")
+    Pupil pet;
 
-    public Postac() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "druzynaId")
+    private Druzyna druzyna;
+
+    @ManyToOne
+    @JoinColumn(name = "kontoId")
+    private Konto konto;
+
+    public Postac() {}
 
     public Postac(String nick, int accountID) {
         this.nick = nick;
         this.accountID = accountID;
         this.team = null;
         this.pet = null;
+    }
+
+    public Postac(String nick, String team, int accountID) {
+        this.nick = nick;
+        this.team = team;
+        this.accountID = accountID;
+        this.pet = null;
+    }
+
+    public Postac(String nick, int accountID, Pupil pet) {
+        this.nick = nick;
+        this.team = null;
+        this.accountID = accountID;
+        this.pet = pet;
     }
 
     public Postac(String nick, String team, int accountID, Pupil pet) {
@@ -40,37 +60,17 @@ public class Postac<pet> {
         this.pet = pet;
     }
 
-    public String getNick() {
-        return nick;
-    }
+    public String getNick() { return nick; }
+    public void setNick(String nick) { this.nick = nick; }
 
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
+    public String getTeam() { return team; }
+    public void setTeam(String team) { this.team = team; }
 
-    public String getTeam() {
-        return team;
-    }
+    public Pupil getPet() { return pet; }
+    public void setPet(Pupil pet) { this.pet = pet; }
 
-    public void setTeam(String team) {
-        this.team = team;
-    }
-
-    public Pupil getPet() {
-        return pet;
-    }
-
-    public void setPet(Pupil pet) {
-        this.pet = pet;
-    }
-
-    public int getAccountID() {
-        return accountID;
-    }
-
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
-    }
+    public int getAccountID() { return accountID; }
+    public void setAccountID(int accountID) { this.accountID = accountID; }
 
     @Override
     public String toString() {
@@ -89,7 +89,6 @@ public class Postac<pet> {
                     ", accountID=" + accountID +
                     ", pet= null" + '}';
         }
-
         return cokolwiek;
     }
 }

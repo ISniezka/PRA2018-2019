@@ -9,19 +9,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queries {
-/*
+
     EntityManager entityManager;
 
     public Queries(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
-    /*public List<Employee> getEmployeeByName(String name) {
+/*
+    public List<Employee> getEmployeeByName(String name) {
         TypedQuery<Employee> query = entityManager.createQuery(
                 "SELECT c FROM Employee c WHERE c.lastName LIKE :name", Employee.class);
         return query.setParameter("name", "%" + name + "%").getResultList();
+    }  */
+
+    public Konto getAccountByLogin(String login) {
+        TypedQuery<Konto> query = entityManager.createQuery(
+                "SELECT k FROM Konto k WHERE k.login LIKE :login", Konto.class);
+        return query.setParameter("login", "%" + login + "%").getSingleResult();
     }
 
+    public List <Osoba> getPeopleByPESELInRange(ArrayList<String> PeselsList) {
+        TypedQuery<Osoba> query = entityManager.createQuery(
+                "SELECT o FROM Osoba o WHERE o.pesel IN (:PeselsList) ", Osoba.class);
+        return query.setParameter("PeselsList", PeselsList).getResultList();
+    }
+
+    public void addPerson(Osoba person) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(person);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+    public void addPet(Pupil p) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(p);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+    public void addTeam(Druzyna team) { //przekazujemy jako parametr obiekt np. Druzyna
+        entityManager.getTransaction().begin();
+        entityManager.persist(team);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+    public List <Druzyna> getAllTeams() {
+        Query query = entityManager.createQuery("Select d from Druzyna d");
+        return query.getResultList();
+    }
+
+    public List <Pupil> getAllPets() {
+        Query query = entityManager.createQuery("Select d from Pupil d");
+        return query.getResultList();
+    }
+
+/*
     public void updateTable(String tableName, String fieldName, String newValueOfTheField, int ...id) {
         entityManager.getTransaction().begin();
 

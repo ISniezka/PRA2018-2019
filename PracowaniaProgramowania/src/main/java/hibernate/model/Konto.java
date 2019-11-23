@@ -1,5 +1,7 @@
 package hibernate.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.lang.*;
 import java.time.ZonedDateTime;
@@ -13,7 +15,7 @@ public class Konto {
     @GeneratedValue(generator = "gen4")
     @SequenceGenerator(name = "gen4", sequenceName = "konto_seq")
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "login", nullable = false, unique = true)
     private String login;
@@ -24,8 +26,11 @@ public class Konto {
     @Column(name = "dataZalozenia", nullable = false)
     private ZonedDateTime creationDate;
 
-    @OneToMany //( cascade = CascadeType.MERGE) //<dodano 08-09-2019>
-    @JoinColumn(name = "idKonta")//, referencedColumnName = "idKonta")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Osoba osoba;
+
+    @OneToMany(mappedBy = "konto")
     private Set<Postac> myCharacters = new HashSet<Postac>();
 
     public Konto() {}
@@ -44,13 +49,16 @@ public class Konto {
     }
 
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getLogin() { return login; }
     public void setLogin(String login) { this.login = login; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public Osoba getOsoba() { return osoba; }
+    public void setOsoba(Osoba osoba) { this.osoba = osoba; }
 
     public ZonedDateTime getCreationDate() { return creationDate; }
     public void setCreationDate(ZonedDateTime creationDate) { this.creationDate = creationDate; }

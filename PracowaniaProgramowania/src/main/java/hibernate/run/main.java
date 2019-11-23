@@ -11,6 +11,7 @@ import hibernate.model.*;
 import hibernate.queries.Queries;
 import hibernate.saveAndRead.ReadFromFile;
 import hibernate.saveAndRead.SaveToFile;
+import hibernate.saveAndRead.Generator;
 
 import java.sql.Array;
 import java.sql.Date;
@@ -22,30 +23,35 @@ import java.util.List;
  */
 public class main {
 
-
-   /* public List<Czlonek> getMembersByName(String name, EntityManager entityManager) {
-
-        TypedQuery<Czlonek> query = entityManager.createQuery("SELECT c FROM Czlonek c WHERE c.nazwisko LIKE :name", Czlonek.class);
-        return query.setParameter("name", "%" + name + "%").getResultList();
-    } */
-
     public static void main(String[] args) {
 
         EntityManagerFactory entityManagerFactory = null;
         EntityManager entityManager = null;
-        //EntityManager entityManager2 = null;
 
         try {
             entityManagerFactory = Persistence.createEntityManagerFactory("hibernate-dynamic"); //taka nazwa jak w persistence.xml
             entityManager = entityManagerFactory.createEntityManager(); //utworz entityManagera
-            //entityManager2 = entityManagerFactory.createEntityManager(); //utworz entityManagera
             entityManager.getTransaction().begin(); // rozpocznij transakcje
 
-            generacjaDanych(entityManager);
+            // generowanie danych do bazy
+            Generator generator = new Generator(entityManager);
+            generator.generate();
 
             entityManager.flush();
             entityManager.getTransaction().commit();
             System.out.println("Nadpisano bazę danych");
+
+            Queries zapytania = new Queries(entityManager);
+            //System.out.println("Dane konta o lognie BoTo = " + zapytania.getAccountByLogin("BoTo").toString());
+
+            //
+            /*
+            ArrayList<String> listaPeseli = new ArrayList<>();
+            listaPeseli.add("00240857435");
+            listaPeseli.add("98248876435");
+            listaPeseli.add("22240857435");
+            for(Osoba o : zapytania.getPeopleByPESELInRange(listaPeseli)) System.out.println("Osoby, ktorych pesel znalazl sie w liscie peseli = " + o.toString());
+            */
 
             // Pobieranie danych
 
@@ -53,17 +59,26 @@ public class main {
             System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
 
             SaveToFile s1 = new SaveToFile(entityManager);
-            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU JSONOWEGO !");
-            s1.readFromDBAndSaveToJSON();
-            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU JSONOWEGO !");
-
-            System.out.println("ROZPOCZYNAM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+            System.out.println("ZAPISUJE XML !");
             s1.readFromDBAndSaveToXML();
-            System.out.println("ZAKONCZYLEM FAZE ZAPISU DO PLIKU XMLOWEGO !");
+            System.out.println("ZAPISALEM XML !");
 
             ReadFromFile r1 = new ReadFromFile(entityManager);
-            r1.readFromXMLAndWriteToDB();
-            //r1.ClearAllTables();
+
+            r1.readFromXML();
+
+            //zapytania.addTeam(new Druzyna("Heroes"));
+            zapytania.addPet(new Pupil ("Filemon","kot"));
+            //for(Druzyna o : zapytania.getAllTeams()) System.out.println("Wszystkie teamy: " + o.toString());
+            for(Pupil l : zapytania.getAllPets()) System.out.println("Wszystkie popile: " + l.toString());
+
+
+            System.out.println("ZAPISUJE JSON !");
+            s1.readFromDBAndSaveToJSON();
+            System.out.println("ZAPISALEM JSON !");
+
+            r1.readFromJSON();
+
 
 /*            System.out.println("PIERWSZE ODCZYTANIE");
             Query zapytanie1 = entityManager.createQuery("SELECT e FROM Czlonek e");
@@ -127,57 +142,6 @@ public class main {
             entityManagerFactory.close();
         }
     }
-
-
-
-
-    public static void generacjaDanych(EntityManager entityManager) {
-        System.out.println("1) Jestem przed tworzeniem kont");
-
-        ArrayList<Konto> AccountsList = new ArrayList<>();
-        AccountsList.add(new Konto("kubaBor","kubaBor123",ZonedDateTime.now().minusDays(2)));
-        AccountsList.add(new Konto("BoTo","BoTo123",ZonedDateTime.now().minusDays(3)));
-        AccountsList.add(new Konto("ToKura","ToKura123",ZonedDateTime.now().minusDays(4)));
-        AccountsList.add(new Konto("KrGr","KrGr123",ZonedDateTime.now().minusDays(5)));
-
-        System.out.println("2) Po stworzeniu kont, przed twrozeniem Osob");
-
-        ArrayList<Osoba> PeopleList = new ArrayList<>();
-        PeopleList.add(new Osoba("00240857435","Jakub", "Borewicz", AccountsList.get(0)));
-        PeopleList.add(new Osoba("81031971754","Bożena", "Tomaszewicz", AccountsList.get(1)));
-        PeopleList.add(new Osoba("92102662558","Tomasz", "Kurowicz", AccountsList.get(2)));
-        PeopleList.add(new Osoba("86051865717","Krzysztof", "Grunkiewicz", AccountsList.get(3)));
-        PeopleList.add(new Osoba("78090512633","Błażej", "Polewicz"));
-        System.out.println("3) Po osobach, przed Druzyna");
-
-        ArrayList<Postac> CharactersList = new ArrayList<>();
-        CharactersList.add(new Postac("WalecznaWalkyria",1));
-        CharactersList.add(new Postac("JohnRambo",2));
-        CharactersList.add(new Postac("JamesBond",2));
-        CharactersList.add(new Postac("LeeMinHoo",4));
-        CharactersList.add(new Postac("NaniNani",4));
-        CharactersList.add(new Postac("KimSeJin",4));
-
-        ArrayList<Druzyna> TeamsList = new ArrayList<>();
-        TeamsList.add(new Druzyna("RocketPower"));
-
-        CharactersList.get(0).setTeam(TeamsList.get(0).getTeamName());
-        CharactersList.get(1).setTeam(TeamsList.get(0).getTeamName());
-        CharactersList.get(3).setTeam(TeamsList.get(0).getTeamName());
-
-        ArrayList<Pupil> PetsList = new ArrayList<>();
-        PetsList.add(new Pupil("Okruszek","Pies"));
-
-        CharactersList.get(0).setPet(PetsList.get(0));
-
-        for(Konto k : AccountsList) entityManager.persist(k);
-        for(Osoba o : PeopleList) entityManager.persist(o);
-        for(Druzyna d : TeamsList) entityManager.persist(d);
-        for(Postac p : CharactersList) entityManager.persist(p);
-        for(Pupil p : PetsList) entityManager.persist(p);
-
-    };
-
 }
 
 
