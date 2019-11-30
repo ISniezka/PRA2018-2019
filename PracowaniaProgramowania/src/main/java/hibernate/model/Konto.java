@@ -26,7 +26,7 @@ public class Konto {
     @Column(name = "dataZalozenia", nullable = false)
     private ZonedDateTime creationDate;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private Osoba osoba;
 

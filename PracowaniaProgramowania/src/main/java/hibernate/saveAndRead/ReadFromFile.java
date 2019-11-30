@@ -56,7 +56,9 @@ public class ReadFromFile {
     }
 
     public void readFromXML() {
+        System.out.println("\nCZYSZCZENIE BAZY DANYCH");
         ClearAllTables();
+        System.out.println("\nROZPOCZYNAM WCZYTANIE DANYCH Z XLM'a");
         XMLDecoder decoder = null;
         try {
             decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(XMLFileName)));
@@ -67,7 +69,15 @@ public class ReadFromFile {
             result.getPeopleList().get(2).setAccount(result.getAccountsList().get(2));
             result.getPeopleList().get(3).setAccount(result.getAccountsList().get(3));
             result.getCharactersList().get(0).setPet(result.getPetsList().get(0));
-            for(Konto p : result.getAccountsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
+
+            System.out.println("Zawartosc XML");
+            for(Osoba p : result.getPeopleList()) System.out.println(p.toString());
+            for(Konto p : result.getAccountsList()) System.out.println(p.toString());
+            for(Postac p : result.getCharactersList()) System.out.println(p.toString());
+            for(Pupil p : result.getPetsList()) System.out.println(p.toString());
+            for(Druzyna p : result.getTeamsList()) System.out.println(p.toString());
+
+            System.out.println("\nROZPOCZYNAM NADPISANIE BAZY DANYCH INFORMACJAMI Z XLM'a");
             writeToDB(result);
             decoder.close();
 
@@ -77,8 +87,9 @@ public class ReadFromFile {
     }
 
     public void readFromJSON() {
-
+        System.out.println("\nCZYSZCZENIE BAZY DANYCH");
         ClearAllTables();
+        System.out.println("\nROZPOCZYNAM WCZYTANIE DANYCH Z JSON'a");
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -95,9 +106,14 @@ public class ReadFromFile {
             result.getCharactersList().get(0).setPet(result.getPetsList().get(0));
             for (Konto k : result.getAccountsList()) k.setId(null);
 
-            for(Konto p : result.getAccountsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
-            for(Pupil p : result.getPetsList()) System.out.println("To wczytalem z pliku JSON: " + p.toString());
+            System.out.println("Zawartosc JSON");
+            for(Osoba p : result.getPeopleList()) System.out.println(p.toString());
+            for(Konto p : result.getAccountsList()) System.out.println(p.toString());
+            for(Postac p : result.getCharactersList()) System.out.println(p.toString());
+            for(Pupil p : result.getPetsList()) System.out.println(p.toString());
+            for(Druzyna p : result.getTeamsList()) System.out.println(p.toString());
 
+            System.out.println("\nROZPOCZYNAM NADPISANIE BAZY DANYCH INFORMACJAMI Z JSON'a");
             writeToDB(result);
 
         } catch (IOException e) { e.printStackTrace(); }
@@ -118,8 +134,8 @@ public class ReadFromFile {
         System.out.println("persist  druzyn");
         for (Druzyna d : result.getTeamsList()) entityManager.persist(d);
 
-        System.out.println("persist  postaci");
-        for (Postac p : result.getCharactersList()) entityManager.persist(p);
+        System.out.println("merge  postaci");
+        for (Postac p : result.getCharactersList()) entityManager.merge(p);
 
         System.out.println("persist  kont");
         for (Konto k : result.getAccountsList()) { entityManager.persist(k);}
@@ -129,10 +145,10 @@ public class ReadFromFile {
         session.clear();
         entityManager.getTransaction().begin();
 
-        System.out.println("persist  osob");
+        System.out.println("merge  osob");
         for (Osoba o : result.getPeopleList())  {entityManager.merge(o);}
         entityManager.getTransaction().commit();
 
-        System.out.println("Nadpisano bazę danych informacjami z pliku");
+        System.out.println("NADPISANO BAZĘ DANYCH INFORMACJAMI Z PLIKU");
     }
 }

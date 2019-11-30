@@ -15,48 +15,8 @@ public class Queries {
     public Queries(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-/*
-    public List<Employee> getEmployeeByName(String name) {
-        TypedQuery<Employee> query = entityManager.createQuery(
-                "SELECT c FROM Employee c WHERE c.lastName LIKE :name", Employee.class);
-        return query.setParameter("name", "%" + name + "%").getResultList();
-    }  */
 
-    public Konto getAccountByLogin(String login) {
-        TypedQuery<Konto> query = entityManager.createQuery(
-                "SELECT k FROM Konto k WHERE k.login LIKE :login", Konto.class);
-        return query.setParameter("login", "%" + login + "%").getSingleResult();
-    }
-
-    public List <Osoba> getPeopleByPESELInRange(ArrayList<String> PeselsList) {
-        TypedQuery<Osoba> query = entityManager.createQuery(
-                "SELECT o FROM Osoba o WHERE o.pesel IN (:PeselsList) ", Osoba.class);
-        return query.setParameter("PeselsList", PeselsList).getResultList();
-    }
-
-    public void addPerson(Osoba person) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(person);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-        entityManager.clear(); //wyczysc pamiec entityMenagera
-    }
-
-    public void addPet(Pupil p) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(p);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-        entityManager.clear(); //wyczysc pamiec entityMenagera
-    }
-
-    public void addTeam(Druzyna team) { //przekazujemy jako parametr obiekt np. Druzyna
-        entityManager.getTransaction().begin();
-        entityManager.persist(team);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-        entityManager.clear(); //wyczysc pamiec entityMenagera
-    }
+////////////////   GET
 
     public List <Druzyna> getAllTeams() {
         Query query = entityManager.createQuery("Select d from Druzyna d");
@@ -68,22 +28,163 @@ public class Queries {
         return query.getResultList();
     }
 
-   /* public int sumPages(int ...pageSize) {
+    public List <Osoba> getAllPeople() {
+        Query query = entityManager.createQuery("Select d from Osoba d");
+        return query.getResultList();
+    }
 
+    public List <Konto> getAllAccounts() {
+        Query query = entityManager.createQuery("Select d from Konto d");
+        return query.getResultList();
+    }
+
+    public List <Postac> getAllCaracters() {
+        Query query = entityManager.createQuery("Select d from Postac d");
+        return query.getResultList();
+    }
+
+    public Konto getAccountByLogin(String login) {
+        TypedQuery<Konto> query = entityManager.createQuery(
+                "SELECT k FROM Konto k WHERE k.login LIKE :login", Konto.class);
+        return query.setParameter("login", "%" + login + "%").getSingleResult();
+    }
+
+    public List <String> getPeopleNames() {
+        TypedQuery<String> query = (TypedQuery<String>) entityManager.createQuery(
+                "Select firstName FROM Osoba");
+        return query.getResultList();
+    }
+
+    public List <Osoba> getPeopleByPESELInRange(ArrayList<String> PeselsList) {
+        TypedQuery<Osoba> query = entityManager.createQuery(
+                "SELECT o FROM Osoba o WHERE o.pesel IN (:PeselsList) ", Osoba.class);
+        return query.setParameter("PeselsList", PeselsList).getResultList();
+    }
+
+/////////////////   ADD
+
+    public void addPerson(Osoba person) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(person);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+    public void addTeam(Druzyna team) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(team);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+    public void addAccount(Osoba o, Konto k) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(k);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createQuery("UPDATE Osoba SET account = :a WHERE pesel = :p");
+        query.setParameter("a",k);
+        query.setParameter("p",o.getPesel());
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+    }
+
+    public void addPet(Pupil p) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(p);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        entityManager.clear(); //wyczysc pamiec entityMenagera
+    }
+
+/////////////////    UPDATE
+
+    public void addPetToCaracter(Pupil pupil, String imiePostaci){
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createQuery("UPDATE Postac SET pet = :idP WHERE nick = :imieP");
+        query.setParameter("idP",pupil);
+        query.setParameter("imieP",imiePostaci);
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.clear();
+    }
+
+    public void updateLastname(String psl, String lastName){
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createQuery("UPDATE Osoba SET lastName = :l WHERE pesel = :p");
+        query.setParameter("l",lastName);
+        query.setParameter("p",psl);
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.clear();
+    }
+
+///////////////////  DELETE
+
+//Employee employee = em.find(Employee.class, 1);
+//
+//  em.getTransaction().begin();
+//  em.remove(employee);
+//  em.getTransaction().commit();
+
+
+    public  void  deleteAccount(Konto kkk) { System.out.println("1");
+        Osoba aaa = kkk.getOsoba(); System.out.println("2");
+        Osoba o = entityManager.getReference(Osoba.class, aaa.getPesel()); System.out.println("3");
+        entityManager.getTransaction().begin(); System.out.println("4");
+        o.setAccount(null);System.out.println("5");
+        entityManager.refresh(o);System.out.println("6");
+        //entityManager.remove(k); System.out.println("\n4");
+        entityManager.getTransaction().commit();
+        entityManager.clear();
+    }
+
+    public  void  deleteAccount2(Osoba kkk) { System.out.println("1");
+        System.out.println("w funkcji usuwajacej konto: " + kkk);
+        //Osoba aaa = kkk.getOsoba(); System.out.println("2");
+        //Osoba o = entityManager.getReference(Osoba.class, aaa.getPesel()); System.out.println("3");
+        entityManager.getTransaction().begin(); System.out.println("2");
+
+        entityManager.createQuery("UPDATE Osoba SET account = null WHERE pesel= " + kkk.getPesel() ).executeUpdate();
+        System.out.println("3");
+
+        entityManager.getTransaction().commit();  System.out.println("1");
+        entityManager.clear();
+    }
+
+
+    public void deletePerson (Osoba ppp){
+        Osoba o = entityManager.getReference(Osoba.class, ppp.getPesel());
+        entityManager.getTransaction().begin();
+        entityManager.remove(o);
+        entityManager.getTransaction().commit();
+        entityManager.clear();
+    };
+
+
+/////////////////////// STRONNICOWANIE   /////////////////////
+    public int sumPages(int ...arguments) {
+        int pageSize = 5; //jezeli nie podano zadnego argumentu to domyslny rozmiar = 5
+        if(arguments.length == 1) pageSize = arguments[0]; //jezeli podano argument to przypisz ten rozmiar strony, ktory podano
         Query queryTotal = entityManager.createQuery("Select count(o) from Osoba o");
         long countResult = (long) queryTotal.getSingleResult();
         int pageNumber = (int) ((countResult / pageSize) + 1);
         return pageNumber;
     }
 
-    public ArrayList <Obecnosc> getAllPresenceByPage(int size, int pagenr) {
+    public ArrayList <Osoba> getAllPeopleByPage(int size, int pagenr) {
         //calculate total number
         Query queryTotal = entityManager.createQuery
-                ("Select count(e) from Obecnosc e");
+                ("Select count(o) from Osoba o");
         long countResult = (long)queryTotal.getSingleResult();
 
         //create query
-        Query query = entityManager.createQuery("Select e FROM Obecnosc e");
+        Query query = entityManager.createQuery("Select o from Osoba o");
         //set pageSize
         int pageSize = size;
         //calculate number of pages
@@ -94,7 +195,7 @@ public class Queries {
         query.setMaxResults(pageSize);
 
         return (ArrayList) query.getResultList();
-    } */
+    }
 
 /*
     public void updateTable(String tableName, String fieldName, String newValueOfTheField, int ...id) {

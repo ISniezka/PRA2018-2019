@@ -1,5 +1,5 @@
 package hibernate.run;
-
+// swager
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -24,6 +24,7 @@ import java.util.List;
 public class main {
 
     public static void main(String[] args) {
+        System.out.println("START\nUstawienie polaczenia i usuniecie aktualnej bazy danych\n");
 
         EntityManagerFactory entityManagerFactory = null;
         EntityManager entityManager = null;
@@ -35,14 +36,22 @@ public class main {
 
             // generowanie danych do bazy
             Generator generator = new Generator(entityManager);
+            System.out.println("\nROZPOCZYNAM NADPISANIE BAZY WYGENEROWANYMI DANYMI");
             generator.generate();
 
             entityManager.flush();
             entityManager.getTransaction().commit();
-            System.out.println("Nadpisano bazę danych");
+            System.out.println("\nNADPISANO BAZE WYGENEROWANYMI DANYMI");
 
             Queries zapytania = new Queries(entityManager);
-            //System.out.println("Dane konta o lognie BoTo = " + zapytania.getAccountByLogin("BoTo").toString());
+
+            System.out.println("Dane konta o lognie BoTo = " + zapytania.getAccountByLogin("BoTo").toString());
+            System.out.println("imiona osob = " + zapytania.getPeopleNames());
+            Osoba a = new Osoba("11111111111","Usun","Mnie");
+            Konto b = new Konto("doUsuniecia","123",ZonedDateTime.now().minusDays(7));
+            zapytania.addPerson(a);
+            zapytania.addAccount(a,b);
+            //zapytania.addAccountToPerson(b,a);
 
             //
             /*
@@ -55,30 +64,54 @@ public class main {
 
             // Pobieranie danych
 
-            Query zapytanie = entityManager.createQuery("Select firstName FROM Osoba");
-            System.out.println("Odczytalem: " + zapytanie.getResultList()+"\n");
-
             SaveToFile s1 = new SaveToFile(entityManager);
-            System.out.println("ZAPISUJE XML !");
-            s1.readFromDBAndSaveToXML();
-            System.out.println("ZAPISALEM XML !");
+            //System.out.println("\nZAPISUJE XML !");
+            //s1.readFromDBAndSaveToXML();
+            //System.out.println("ZAPISALEM XML !");
 
             ReadFromFile r1 = new ReadFromFile(entityManager);
+            //r1.readFromXML();
 
-            System.out.println("ZAPISALEM XML !");
-            r1.readFromXML();
+            System.out.println("\nDODAJE DANE DO BAZY");
+            zapytania.addTeam(new Druzyna("Heroes"));
+            zapytania.addPet(new Pupil ("Little Tiger Wrrr","kot"));
+            zapytania.addPet(new Pupil ("Leon","kameleon"));
+            ArrayList<Pupil> petList = (ArrayList<Pupil>) zapytania.getAllPets();
 
-            //zapytania.addTeam(new Druzyna("Heroes"));
-            zapytania.addPet(new Pupil ("Filemon","kot"));
-            //for(Druzyna o : zapytania.getAllTeams()) System.out.println("Wszystkie teamy: " + o.toString());
-            for(Pupil l : zapytania.getAllPets()) System.out.println("Wszystkie popile: " + l.toString());
+            zapytania.addPetToCaracter(petList.get(1), "JohnRambo");
+            zapytania.addPetToCaracter(petList.get(2),"JamesBond");
 
+            System.out.println("\nUSUWAM Z BAZY:  " + b.toString());
+            //zapytania.deletePerson(a);
+            for(Konto i : zapytania.getAllAccounts()) System.out.println("Z bazy danych: " + i);
+            //zapytania.deleteAccount2(a);
 
-            System.out.println("ZAPISUJE JSON !");
+            zapytania.updateLastname("92102662558","Lis");
+            System.out.println("\nSPRAWDZAM ZMIANY");
+
+            for(Pupil l : petList) System.out.println("Wszystkie pupile: " + l.toString());
+            for(Druzyna o : zapytania.getAllTeams()) System.out.println("Wszystkie teamy: " + o.toString());
+            for(Osoba o : zapytania.getAllPeople()) System.out.println("Wszytskie osoby" + o.toString());
+            for(Konto o : zapytania.getAllAccounts()) System.out.println("Wszytskie konta" + o.toString());
+
+            System.out.println("\nZAPISUJE JSON !");
             s1.readFromDBAndSaveToJSON();
             System.out.println("ZAPISALEM JSON !");
 
             r1.readFromJSON();
+
+            System.out.println("\nROZPOCZYNAN ZAPYTANIE STRONICOWANE");
+            int ileOsobNaStronie = 2;
+            int ileStron = zapytania.sumPages(ileOsobNaStronie); //rozmiar strony to ileOsobNaStronie
+            System.out.println("Dane dziela sie na: " + ileStron + " stron, zakladajac " + ileOsobNaStronie + " osob na stronie");
+            ArrayList <Osoba> listaWynikow = new ArrayList<>();
+            for(int i=1; i<=ileStron; i++) {
+                listaWynikow = zapytania.getAllPeopleByPage(ileOsobNaStronie, i);
+                for(Osoba o : listaWynikow) {
+                    System.out.println("Strona " + i + ": " + o);
+                }
+            }
+            System.out.println("SKONCZYLEM ZAPYTANIE STRONICOWANE\n");
 
 
 /*            System.out.println("PIERWSZE ODCZYTANIE");

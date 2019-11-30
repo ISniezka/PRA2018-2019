@@ -3,11 +3,12 @@ package hibernate.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.lang.*;
 
 @Entity
 @Table(name = "osoby")
-public class Osoba {
+public class Osoba implements Serializable {
 
     @Id
     private String pesel;
@@ -18,7 +19,7 @@ public class Osoba {
     @Column(name = "nazwisko", nullable = false)
     private String lastName;
 
-    @OneToOne//(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)//(cascade = CascadeType.ALL)
     @JoinColumn(name="konto", nullable = true, referencedColumnName = "id")//, referencedColumnName = "id")
     @JsonBackReference
     Konto account;
